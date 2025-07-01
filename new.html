@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alora Browser</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/new.css">
+</head>
+
+<body>
+
+    <main class="main-content">
+        <h1 class="logo-title">Alora</h1>
+
+        <div class="search-container">
+            <img src="assets/imgs/icons/shadow.png" class="shadowIcon">
+            <input type="text" class="main-search" placeholder="Ask ShadowAI anything...">
+        </div>
+
+        <div class="shortcuts" id="shortcuts">
+            <!-- Shortcuts will be added  here -->
+        </div>
+    </main>
+    </div>
+
+    <script>
+        const shortcutstemplist = [
+            { name: 'Netflix', url: 'netflix.com' },
+            { name: 'YouTube', url: 'youtube.com' },
+            { name: 'TikTok', url: 'tiktok.com' },
+            { name: 'Instagram', url: 'instagram.com' },
+            { name: 'Snapchat', url: 'snapchat.com' },
+            { name: 'Roblox', url: 'roblox.com' },
+            { name: 'Discord', url: 'discord.com' },
+            { name: 'GitHub', url: 'github.com' },
+            { name: 'Spotify', url: 'spotify.com' },
+            { name: 'Twitter', url: 'twitter.com' },
+            { name: 'Reddit', url: 'reddit.com' },
+            { name: 'ShuttleAI', url: 'shuttleai.com' }
+        ];
+
+        function getFaviconUrl(domain) {
+            return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+        }
+
+        function addShortcuts() {
+            const shortcutsContainer = document.getElementById('shortcuts');
+
+            shortcutstemplist.forEach(site => {
+                const shortcut = document.createElement('a');
+                shortcut.className = 'shortcut-card';
+                shortcut.href = `https://${site.url}`;
+                shortcut.target = '_blank';
+                shortcut.rel = 'noopener noreferrer';
+
+                shortcut.innerHTML = `
+                    <div class="shortcut-icon">
+                        <img src="${getFaviconUrl(site.url)}" alt="${site.name}" loading="lazy">
+                    </div>
+                    <div class="shortcut-title">${site.name}</div>
+                `;
+
+                shortcutsContainer.appendChild(shortcut);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            addShortcuts();
+        });
+
+    </script>
+</body>
+
+</html>

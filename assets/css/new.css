@@ -1,0 +1,216 @@
+:root {
+    --background: #000000;
+    --home-bg: url("../imgs/backgrounds/alora.png");
+    --primary: #0a0a0a;
+    --primary-dark: #050505;
+    --secondary: #1a1a1a;
+    --accent: #6366f1;
+    --accent-light: #8b5cf6;
+    --accent-glow: rgba(99, 102, 241, 0.2);
+    --border: rgba(255, 255, 255, 0.1);
+    --text: #ffffff;
+    --text-muted: #a1a1aa;
+    --hover-danger: #ef4444;
+    --active-tab: linear-gradient(145deg, #1a1a1a, var(--secondary));
+    --glass: rgba(10, 10, 10, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--background) var(--home-bg) center/cover no-repeat;
+    background-attachment: fixed;
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.main-content {
+    flex: 1;
+    margin-top: 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.logo-title {
+    font-size: 5rem;
+    font-weight: 300;
+    margin-bottom: 40px;
+    background: linear-gradient(135deg, #ffffff, #a1a1aa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -2px;
+}
+
+.search-container {
+    width: 100%;
+    max-width: 580px;
+    margin-bottom: 60px;
+    position: relative;
+}
+
+.shadowIcon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    z-index: 1;
+    opacity: 0.8;
+}
+
+.main-search {
+    width: 100%;
+    padding: 16px 20px 16px 50px;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 25px;
+    color: var(--text);
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+}
+
+
+.main-search:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+    background: rgba(10, 10, 10, 0.9);
+}
+
+.main-search::placeholder {
+    color: var(--text-muted);
+}
+
+.bot-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    font-size: 20px;
+}
+
+.shortcuts {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    gap: 24px;
+    width: 100%;
+    max-width: 900px;
+}
+
+.shortcut-card {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+    min-height: 120px;
+    justify-content: center;
+    width: 100px; /* Fixed width for consistency */
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.shortcut-card:hover {
+    transform: translateY(-4px);
+    background: rgba(26, 26, 26, 0.9);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.shortcut-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.shortcut-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.shortcut-title {
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--text);
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav-bar {
+        padding: 8px 12px;
+        gap: 8px;
+    }
+
+    .logo-title {
+        font-size: 3rem;
+        margin-bottom: 30px;
+    }
+
+    .main-content {
+        padding: 40px 15px;
+    }
+
+    .shortcuts {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 16px;
+    }
+
+    .shortcut-card {
+        padding: 16px;
+        min-height: 100px;
+    }
+
+    .shortcut-icon {
+        width: 28px;
+        height: 28px;
+    }
+
+    .shortcut-title {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-title {
+        font-size: 2.2rem;
+    }
+
+    .main-search {
+        padding: 14px 18px 14px 45px;
+        font-size: 14px;
+    }
+
+    .shortcuts {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alora Browser</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="assets/css/tab.css" rel="stylesheet" type="text/css">
+      <link rel="icon" type="image/x-icon" href="/assets/imgs/icons/alora.png">
+
+</head>
+
+<body>
+    <div class="browser-container">
+        <nav class="nav-bar">
+            <div class="nav-controls">
+                <button class="nav-btn" id="backBtn" title="Go back">
+                    <i class="material-icons">arrow_back</i>
+                </button>
+                <button class="nav-btn" id="forwardBtn" title="Go forward">
+                    <i class="material-icons">arrow_forward</i>
+                </button>
+                <button class="nav-btn" id="refreshBtn" title="Refresh">
+                    <i class="material-icons">refresh</i>
+                </button>
+            </div>
+
+            <div class="address-bar">
+                <i class="material-icons lock-icon">lock</i>
+                <input type="text" class="address-input" placeholder="Search or enter web address"
+                    value="https://alora.app" id="addressInput">
+            </div>
+
+            <div class="profile-section">
+                <div class="profile-pic" title="Profile">NC</div>
+                <button class="menu-btn" title="More options">
+                    <i class="material-icons">more_vert</i>
+                </button>
+            </div>
+        </nav>
+
+        <iframe src="new.html" class="content-frame" id="contentFrame"></iframe>
+    </div>
+</body>
+</html>
