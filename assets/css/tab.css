@@ -79,15 +79,17 @@ body {
 .address-bar {
     flex: 1;
     position: relative;
+    margin-left:-5px;
 }
 
 .address-input {
-    width: 100%;
-    padding: 8px 12px 8px 35px;
+    width: 101%;
+    padding: 9px 9px 8px 35px;
     background: rgba(26, 26, 26, 0.8);
     border: 1px solid var(--glass-border);
     border-radius: 20px;
     color: var(--text);
+    margin-left: 0px;
     font-size: 13px;
     font-family: 'Poppins', sans-serif;
     transition: all 0.2s ease;
@@ -106,11 +108,24 @@ body {
 
 .lock-icon {
     position: absolute;
-    left: 12px;
+    margin-left: 6px;
     top: 50%;
     transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.193);
+    padding:5px;
     color: #10b981;
-    font-size: 16px;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+}
+
+.lock-icon svg {
+    width: 25px;
+    height: 25px;
+    stroke: #10b981;
 }
 
 .profile-section {
@@ -170,4 +185,17 @@ body {
         padding: 8px 12px;
         gap: 8px;
     }
+}
+
+.nav-btn svg,
+.lock-icon svg,
+.menu-btn svg {
+    width: 22px;
+    height: 22px;
+    stroke: white;
+}
+
+.lucide-rotate-cw {
+    transform: scale(0.88);
+    /* You can tweak this value */
 }
