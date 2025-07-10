@@ -1,0 +1,212 @@
+.tab {
+  width: 900px;
+  height: 400px;
+  margin: 10% auto;
+  border-radius: 10px;
+}
+
+.tabContent {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/*==============================
+=         TAB BAR             =
+==============================*/
+.tabBar {
+  cursor: grab;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding: 4px 8px;
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* Tab Info (icon + title) */
+.tabBar .info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tabBar .info .favicon {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+}
+
+.tabBar .info .title {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text);
+}
+
+/* Drag Handle */
+.drag {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  height: 20px;
+  stroke: var(--text-muted);
+}
+
+
+/* Tab Controls */
+.tabBar .controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tabBar .controls button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tabBar .controls button:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.tabBar .controls button svg {
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+.tabBar .controls .close:hover {
+  background: var(--hover-danger);
+  color: white;
+}
+
+.tabBar .controls .fullscreen:hover {
+  background: var(--accent);
+  color: white;
+}
+
+/*==============================
+=     NAVIGATION & ADDRESS    =
+==============================*/
+.navBar,
+.browserContainer {
+  display: flex;
+  align-items: center;
+  backdrop-filter: blur(20px);
+  background: var(--glass);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.browserContainer {
+  padding: 4px 8px;
+  justify-content: space-between;
+}
+
+.navControls {
+  display: flex;
+  gap: 6px;
+  margin-left: 0;
+}
+
+.addressBar {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-left: 10px;
+}
+
+.addressInput {
+  width: 99%;
+  height: 24px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+  color: var(--text);
+  background: rgba(26, 26, 26, 0.8);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  transition: all 0.2s ease;
+}
+
+.addressInput:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(26, 26, 26, 0.95);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.addressInput::placeholder {
+  color: var(--text-muted);
+}
+
+/*==============================
+=           BUTTONS           =
+==============================*/
+.navBtn,
+.menuBtn {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  font-size: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.navBtn svg,
+.menuBtn svg {
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+
+.navBtn:hover,
+.menuBtn:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.navBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.menuBtn {
+  width: 28px;
+  height: 28px;
+  margin-right: 0;
+}
+
+.menuBtn svg {
+  width: 20px;
+  height: 20px;
+}

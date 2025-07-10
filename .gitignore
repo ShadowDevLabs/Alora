@@ -1,11 +1,28 @@
-# Node
-node_modules/
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+*/dist
+.wrangler
+.output
+.vercel
+.netlify
+.vinxi
+app.config.timestamp_*.js
+
+# Environment
 .env
-.env.*.local
-.vscode/
+.env*.local
+
+# dependencies
+*/node_modules
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+*.launch
+.settings/
+
+# Temp
+gitignore
+
+# System Files
 .DS_Store
+Thumbs.db

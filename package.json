@@ -1,31 +1,24 @@
 {
   "name": "alora",
-  "version": "0.5.0",
-  "description": "Proxython project 2025",
-  "keywords": [
-    "alora"
-  ],
-  "homepage": "https://github.com/shadowdevlabs/alora#readme",
-  "bugs": {
-    "url": "https://github.com/shadowdevlabs/alora/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/shadowdevlabs/alora.git"
-  },
-  "license": "ISC",
-  "author": "Peak & NC",
+  "version": "0.0.1",
+  "description": "",
   "type": "module",
-  "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vite": "^6.0.0",
+    "vite-plugin-solid": "^2.11.6"
   },
   "dependencies": {
-    "@titaniumnetwork-dev/ultraviolet": "^3.2.10",
-    "express": "^5.1.0",
-    "wisp-server-node": "^1.1.7"
-  },
-  "resolutions": {
-    "esbuild": "^0.25.5"
+    "@solidjs/meta": "^0.29.4",
+    "@solidjs/router": "^0.15.3",
+    "lucide-solid": "^0.525.0",
+    "solid-js": "^1.9.5"
   }
 }
