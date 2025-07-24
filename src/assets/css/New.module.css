@@ -1,6 +1,6 @@
 :root {
     --background: #000000;
-    --home-bg: url("../imgs/backgrounds/alora.png");
+    --home-bg: url("/src/assets/images/alora_bg.png");
     --primary: #0a0a0a;
     --primary-dark: #050505;
     --secondary: #1a1a1a;
@@ -17,25 +17,36 @@
     --success: #10b981;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
-body {
-    font-family: 'Poppins', sans-serif;
-    background: var(--background) var(--home-bg) center/cover no-repeat;
-    background-attachment: fixed;
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
+.fade-exit-active {
+    transition: all 300ms ease-in-out;
+}
+
+.fade-exit-to {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
 }
 
 .mainContent {
-    flex: 1;
-    margin-top: 5%;
+    min-height: 100vh;
+    background-color: var(--background);
+    background-image: var(--home-bg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -47,12 +58,13 @@ body {
 .logoTitle {
     font-size: 5rem;
     font-weight: 300;
+    font-family: 'Poppins', sans-serif;
     margin-bottom: 40px;
     background: linear-gradient(135deg, var(--text), var(--text-muted));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    letter-spacing: -2px;
+    letter-spacing: -3px;
 }
 
 .searchContainer {
@@ -75,7 +87,7 @@ body {
 
 .mainSearch {
     width: 100%;
-    padding: 16px 20px 16px 50px;
+    padding: 18px 24px 18px 54px;
     background: var(--glass);
     backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
@@ -83,6 +95,7 @@ body {
     color: var(--text);
     font-size: 16px;
     font-family: 'Poppins', sans-serif;
+    font-weight: 400;
     transition: all 0.3s ease;
 }
 
@@ -90,7 +103,7 @@ body {
     outline: none;
     border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-glow);
-    background: rgba(10, 10, 10, 0.9);
+    background: var(--primary);
 }
 
 .mainSearch::placeholder {
@@ -113,63 +126,323 @@ body {
     justify-content: center;
     gap: 24px;
     width: 100%;
-    max-width: 900px;
+    max-width: 1150px;
 }
 
 .shortcutCard {
     background: var(--glass);
     backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 16px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    color: inherit;
-    min-height: 120px;
     justify-content: center;
-    width: 200px;
-    flex-shrink: 0;
+    gap: 16px;
+    cursor: pointer;
+    position: relative;
+    color: var(--text);
+    width: 250px;
+    min-height: 140px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
 }
 
+
 .shortcutCard:hover {
-    transform: translateY(-4px);
-    background: rgba(26, 26, 26, 0.9);
-    border-color: var(--border);
-    box-shadow: 0 8px 32px var(--primary-dark);
+    transform: translateY(-8px) scale(1.02);
+    border-color: var(--accent);
+}
+
+.shortcutCard:hover::before {
+    opacity: 1;
+}
+
+.shortcutCard > * {
+    position: relative;
+    z-index: 1;
 }
 
 .shortcutIcon {
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
+    width: 48px;
+    height: 48px;
     overflow: hidden;
+    margin: 0 auto;
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .shortcutIcon img {
     width: 100%;
+    border-radius:5px;
     height: 100%;
-    object-fit: cover;
 }
 
+.shortcutCard:hover .shortcutIcon {
+    transform: scale(1.1);
+}
+
+
 .shortcutTitle {
-    font-weight: 500;
-    font-size: 13px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
     color: var(--text);
+    text-underline-position: below;
     text-align: center;
-    line-height: 1.2;
+    text-decoration: none;
+    margin-top:10px;
+    transition: color 0.3s ease;
+}
+
+.shortcutLink{
+        font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--text);
+    text-underline-position: below;
+    text-align: center;
+    text-decoration: none;
+    line-height: 1.3;
+    margin-top: 4px;
+    transition: color 0.3s ease;
+}
+
+
+
+.shortcut-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2;
+}
+
+.shortcutCard:hover .shortcut-actions {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.icon-btn {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    padding: 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 28px;
+    height: 28px;
+    position: relative;
+    overflow: hidden;
+}
+
+.icon-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.icon-btn:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+    color: var(--text);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.icon-btn:hover::before {
+    opacity: 0.1;
+}
+
+.icon-btn:active {
+    transform: translateY(0);
+}
+
+.delete-btn {
+    color: var(--hover-danger);
+}
+
+.delete-btn::before {
+    background: var(--hover-danger);
+}
+
+.delete-btn:hover {
+    border-color: var(--hover-danger);
+    color: var(--text);
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.modal {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    padding: 32px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 90%;
+    width: 400px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+    position: relative;
+    transform: translateY(20px) scale(0.95);
+    animation: modalIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes modalIn {
+    to {
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.6;
+}
+
+.modal h2 {
+    font-size: 24px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    color: var(--text);
+    margin-bottom: 8px;
+    text-align: center;
+    background: linear-gradient(135deg, var(--text), var(--accent-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+}
+
+.modal input {
+    padding: 16px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    background: var(--primary);
+    color: var(--text);
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+}
+
+.modal input::placeholder {
+    color: var(--text-muted);
+}
+
+.modal input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+    background: var(--secondary);
+    transform: translateY(-1px);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.modal-actions button {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: -0.2px;
+}
+
+.modal-actions button:first-child {
+    background: var(--accent);
+    color: var(--text);
+}
+
+.modal-actions button:first-child:hover {
+    background: var(--accent-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px var(--accent-glow);
+}
+
+.modal-actions button:last-child {
+    background: var(--secondary);
+    color: var(--text-muted);
+    border: 1px solid var(--glass-border);
+}
+
+.modal-actions button:last-child:hover {
+    background: var(--primary);
+    color: var(--text);
+    border-color: var(--border);
+    transform: translateY(-1px);
+}
+
+.modal-actions button:active {
+    transform: translateY(0);
+}
+
+.shortcutCard[style*="cursor:pointer"] {
+    border: 2px dashed var(--glass-border);
+    background: var(--primary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.shortcutCard[style*="cursor:pointer"]:hover {
+    border-color: var(--accent);
+    background: var(--glass);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 768px) {
-    .navBar {
-        padding: 8px 12px;
-        gap: 8px;
-    }
-
     .logoTitle {
         font-size: 3rem;
         margin-bottom: 30px;
@@ -180,22 +453,31 @@ body {
     }
 
     .shortcuts {
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
         gap: 16px;
     }
 
     .shortcutCard {
-        padding: 16px;
-        min-height: 100px;
+        width: 180px;
+        padding: 20px;
+        min-height: 120px;
     }
 
     .shortcutIcon {
-        width: 28px;
-        height: 28px;
+        width: 40px;
+        height: 40px;
     }
 
     .shortcutTitle {
-        font-size: 12px;
+        font-size: 14px;
+    }
+
+    .modal {
+        width: 350px;
+        padding: 24px;
+    }
+
+    .modal h2 {
+        font-size: 20px;
     }
 }
 
@@ -210,7 +492,36 @@ body {
     }
 
     .shortcuts {
-        grid-template-columns: repeat(4, 1fr);
         gap: 12px;
+    }
+
+    .shortcutCard {
+        width: 160px;
+        padding: 16px;
+        min-height: 110px;
+    }
+
+    .shortcutIcon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .shortcutTitle {
+        font-size: 13px;
+    }
+
+    .modal {
+        width: 320px;
+        padding: 20px;
+    }
+
+    .modal input {
+        padding: 12px 14px;
+        font-size: 14px;
+    }
+
+    .modal-actions button {
+        padding: 10px 20px;
+        font-size: 13px;
     }
 }
