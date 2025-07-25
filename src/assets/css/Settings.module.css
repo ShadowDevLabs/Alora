@@ -95,6 +95,7 @@ body {
   padding: 20px;
   border-radius: 12px;
   width: 500px;
+  height:275px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -173,4 +174,14 @@ select:focus {
   width: 16px;
   height: 16px;
   color: var(--text);
+}
+.settingSectionColorInput {
+    width: 60%;
+    height: 40px;
+    border: 2px solid var(--border);
+    background: var(--primary-dark);
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 4px;
+    outline: none;
 }
