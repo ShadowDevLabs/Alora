@@ -15,8 +15,8 @@ function Dock() {
   return (
     <div class={styles.dock}>
       <button class={styles.button} onClick={addWindow}><Plus size='18' /></button>
-      <button class={styles.button}><SlidersHorizontal size='18' /></button>
       <button class={styles.button}><ZoomOut size='18' /></button>
+      <button class={styles.button}><SlidersHorizontal size='18' /></button>
     </div>
 
   );

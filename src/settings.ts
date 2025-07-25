@@ -35,7 +35,7 @@ export default class SettingsManager {
     }
 
     static defaultSettings: Settings = {
-        searchEngine: "https://www.google.com/search?q={query}",
+        searchEngine: "https://search.brave.com/search?q={query}",
         theme: "dark",
         proxy: "uv",
         shortcuts: [

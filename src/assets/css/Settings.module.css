@@ -1,0 +1,176 @@
+:root {
+    --background: #000000;
+    --home-bg: url("/src/assets/images/alora_bg.png");
+    --primary: #0a0a0a;
+    --primary-dark: #050505;
+    --secondary: #1a1a1a;
+    --accent: #6366f1;
+    --accent-light: #8b5cf6;
+    --accent-glow: rgba(99, 102, 241, 0.2);
+    --border: rgba(255, 255, 255, 0.1);
+    --text: #ffffff;
+    --text-muted: #a1a1aa;
+    --hover-danger: #ef4444;
+    --active-tab: linear-gradient(145deg, #1a1a1a, var(--secondary));
+    --glass: rgba(10, 10, 10, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.05);
+    --success: #10b981;
+}
+
+body {
+  background: 
+    linear-gradient(
+      rgba(10, 10, 10, 0.85), 
+      rgba(10, 10, 10, 0.85)
+    ),
+    var(--home-bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: var(--text);
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+
+.header {
+  color: var(--text);
+  font-size: 40px;
+  font-weight: 700;
+  margin-top: 1.5%;
+  margin-bottom: 16px;
+  margin-left: 18px;
+}
+
+.navbar {
+  display: flex;
+  gap: 12px;
+  padding: 0 16px;
+  margin-bottom: 32px;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--primary);
+  color: var(--text);
+  padding: 7px 30px;
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+}
+
+.tab:hover {
+  background: var(--secondary);
+  border-color: var(--border);
+}
+
+.tab.active{
+    background: var(--success);
+}
+
+
+/* general settings content */
+.generalContent {
+  padding: 20px;
+  margin-top: -1.75%;
+  margin-left: -5px;
+  color: var(--text);
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.settingSection {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  padding: 20px;
+  border-radius: 12px;
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.settingSectionTitle {
+  font-size: 25px;
+  margin-bottom: 0;
+  font-weight: bold;
+  color: var(--text);
+}
+
+input {
+  background: var(--primary);
+  border: 1px solid var(--border);
+  padding: 10px;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 5px var(--accent-glow);
+}
+
+.settingSectionText {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+select {
+  background: var(--primary-dark);
+  border: 1px solid var(--border);
+  padding: 10px;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 5px var(--accent-glow);
+}
+
+.settingSectionText {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 0px;
+}
+
+.settingSectionButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: var(--text);
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  width:105px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.settingSectionButton:hover {
+  background: var(--accent-light);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.settingsSectionIcon {
+  width: 16px;
+  height: 16px;
+  color: var(--text);
+}

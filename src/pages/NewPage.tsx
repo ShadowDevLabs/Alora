@@ -76,7 +76,7 @@ const NewPage = () => {
     <main class={styles.mainContent}>
       <h1 class={styles.logoTitle}>Alora</h1>
       <div class={styles.searchContainer}>
-        <img src="assets/imgs/icons/shadow.png" class={styles.shadowIcon} />
+        <img src="./icons/shadow.png" class={styles.shadowIcon} />
         <input type="text" class={styles.mainSearch} placeholder="Ask ShadowAI anything..." />
       </div>
 
