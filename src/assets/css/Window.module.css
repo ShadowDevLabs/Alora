@@ -49,16 +49,25 @@
 }
 
 .tabBar .info .favicon {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 2px;
+  flex-shrink: 0;
 }
 
 .tabBar .info .title {
   font-size: 12px;
   font-weight: 400;
   color: var(--text);
+  white-space: nowrap;
+  margin-top:1.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
+  line-height: 20px;
 }
+
+
 
 /* Drag Handle */
 .drag {
@@ -225,8 +234,8 @@
   top: 115%;
   margin-top: 2px;
   right: 0;
-  margin-right: 0px;
-  background: var(--glass);
+  margin-right: 7px;
+  background: rgba(0,0,0,0.9);
   border: 1px solid var(--glass-border);
   border-radius: 4px;
   display: block;
