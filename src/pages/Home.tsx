@@ -10,13 +10,13 @@ import { init as initProxy } from '../proxy';
 const [windows, setWindows] = createSignal<{ id: string, url: string, closing?: boolean }[]>([]);
 const [stackingOrder, setStackingOrder] = createSignal<string[]>([]);
 window.addEventListener('transport', initProxy as EventListener);
-initProxy(); 
+initProxy();
 function Dock() {
   return (
     <div class={styles.dock}>
-      <button class={styles.button} onClick={addWindow}><Plus size='18' /></button>
+      <button class={styles.button} onClick={() => addWindow()}><Plus size='18' /></button>
       <button class={styles.button}><ZoomOut size='18' /></button>
-      <button class={styles.button}><SlidersHorizontal size='18' /></button>
+      <button class={styles.button} onClick={() => addWindow('alora://settings')}><SlidersHorizontal size='18' /></button>
     </div>
 
   );
@@ -33,8 +33,8 @@ function closeWindow(id: string) {
   }, 300);
 }
 
-function addWindow() {
-  const newWindow = { id: crypto.randomUUID(), url: (windows().length == 2 ? '/test' : '/new'), closing: false };
+function addWindow(url?: string) {
+  const newWindow = { id: crypto.randomUUID(), url: url || (windows().length == 2 ? 'alora://test' : 'alora://new'), closing: false };
   setWindows(prev => [...prev, newWindow]);
   setStackingOrder(prev => [...prev, newWindow.id]);
 }
@@ -57,7 +57,7 @@ const Home: Component = () => {
       <For each={windows()}>{(item) => (
         <Window
           id={item.id}
-          url={item.url}
+          startUrl={item.url}
           zIndex={stackingOrder().indexOf(item.id)}
           onFocus={bringToFront}
           onClose={closeWindow}

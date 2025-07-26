@@ -1,11 +1,12 @@
 /*istg this isnt ai i just used it to reformat everything to work with solid*/
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
+
 .iframeContainer {
   flex-grow: 1;
   position: relative;
   min-height: 0;
-    overflow-x: hidden;
+  overflow-x: hidden;
 }
 
 
@@ -28,9 +29,6 @@
   display: block;
 }
 
-/*==============================
-=         TAB BAR             =
-==============================*/
 .tabBar {
   cursor: grab;
   position: relative;
@@ -44,7 +42,6 @@
   border-bottom: 1px solid var(--glass-border);
 }
 
-/* Tab Info (icon + title) */
 .tabBar .info {
   display: flex;
   align-items: center;
@@ -81,7 +78,6 @@
 }
 
 
-/* Tab Controls */
 .tabBar .controls {
   display: flex;
   align-items: center;
@@ -117,10 +113,6 @@
   transform: scale(0.9);
 }
 
-
-/*==============================
-=     NAVIGATION & ADDRESS    =
-==============================*/
 .navBar,
 .browserContainer {
   display: flex;
@@ -133,12 +125,15 @@
 .browserContainer {
   padding: 4px 8px;
   justify-content: space-between;
+  position: relative;
+  z-index: 10;
 }
 
 .navControls {
   display: flex;
   gap: 6px;
   margin-left: 0;
+  margin-top: -1px;
 }
 
 .addressBar {
@@ -171,9 +166,7 @@
   color: var(--text-muted);
 }
 
-/*==============================
-=           BUTTONS           =
-==============================*/
+
 .navBtn,
 .menuBtn {
   width: 20px;
@@ -221,6 +214,68 @@
 }
 
 
+.menuWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.menuPopup {
+  position: absolute;
+  top: 115%;
+  margin-top: 2px;
+  right: 0;
+  margin-right: 0px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 4px;
+  display: block;
+  backdrop-filter: blur(20px);
+  padding: 3px 4px;
+  z-index: 9999;
+  min-width: 180px;
+}
+
+
+
+.menuWrapper:hover .menuPopup {
+  display: block;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 13px;
+  color: var(--text);
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.menuItem:hover {
+  background: var(--border);
+}
+
+.menuItemIcon {
+  width: 18px;
+  height: 18px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.menuDivider {
+  height: 1px;
+  width: 98%;
+  background-color: var(--text-muted);
+  margin: 3px auto;
+}
+
+
+/* loading screen. */
 
 .loadingContainer {
   width: 100%;
@@ -372,7 +427,7 @@
 .loadingText {
   color: var(--text);
   font-size: 24px;
-  display:none;
+  display: none;
   font-weight: bold;
   text-align: center;
   font-family: "Poppins", sans-serif;
@@ -393,17 +448,17 @@
 }
 
 .loadingPercentage {
-  display:none;
+  display: none;
 }
 
 .loadingProgress {
   height: 100%;
   background: linear-gradient(90deg,
-    var(--accent) 0%,
-    var(--accent-light) 25%,
-    rgba(255, 255, 255, 0.3) 50%,
-    var(--accent-light) 75%,
-    var(--accent) 100%);
+      var(--accent) 0%,
+      var(--accent-light) 25%,
+      rgba(255, 255, 255, 0.3) 50%,
+      var(--accent-light) 75%,
+      var(--accent) 100%);
   background-size: 200% 100%;
   border-radius: 3px;
   animation: loadingProgress 2.5s ease-in-out infinite;

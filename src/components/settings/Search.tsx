@@ -1,5 +1,13 @@
-import { Component } from 'solid-js';
+import type { Component } from 'solid-js';
+import { createSignal } from 'solid-js';
+import Settings from '../../settings';
 import styles from '../../assets/css/Settings.module.css';
+
+const [searchSettings, setSearchSettings] = createSignal(Settings.defaultSettings);
+
+function save(key: string, value: string): void {
+    Settings.set(key, value);
+}
 
 const Search: Component = () => {
     return (

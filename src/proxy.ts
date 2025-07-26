@@ -10,12 +10,14 @@ const transports = {
 
 async function init(e?: TransportEvent) {
     if (!e) navigator.serviceWorker.register('/sw.js');
-    await setTransport(undefined, "epoxy");
+    console.log("[INIT] Setting transport...");
+    await setTransport();
 }
 
-async function setTransport(server: string | undefined, transport?: string) {
+async function setTransport(server?: string | undefined, transport?: string) {
     server = server || "wss://phantom.lol/wisp/";
     transport = transport || "epoxy"
+    console.log(`[ST] Setting transport as ${transport} with server ${server}`);
     await conn.setTransport(transports[transport as keyof typeof transports], [{ wisp: server }]);
 }
 
@@ -49,4 +51,8 @@ function readable(input: string): string {
     }
 }
 
-export { init, setTransport, parse, readable }; 
+function icon(url: string): string {
+    return url.startsWith("alora:/") ? '/icons/alora-transparent-thick.png' : `https://www.google.com/s2/favicons?sz=64&domain_url=${url}`;
+}
+
+export { init, setTransport, parse, readable, icon }; 

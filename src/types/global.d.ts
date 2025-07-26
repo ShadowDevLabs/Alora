@@ -25,8 +25,8 @@ interface Shortcut {
 }
 
 interface Settings {
-  searchEngine: string;
-  theme: string;
-  proxy: string;
-  shortcuts: Shortcut[];
+    searchEngine: string;
+    theme: string;
+    proxy: string;
+    shortcuts: Shortcut[];
 }

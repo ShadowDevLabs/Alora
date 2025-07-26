@@ -1,4 +1,6 @@
-import { Component } from 'solid-js';
+import type { Component } from 'solid-js';
+import { createSignal } from 'solid-js';
+import Settings from '../../settings';
 import styles from '../../assets/css/Settings.module.css';
 import Rocket from 'lucide-solid/icons/rocket';
 

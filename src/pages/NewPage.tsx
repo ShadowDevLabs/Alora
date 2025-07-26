@@ -87,7 +87,7 @@ const NewPage = () => {
             index={i()}
             onEdit={() => openEditModal(i())}
             onDelete={() => deleteShortcut(i())}
-            onClick={() => load(site.url)} />
+            onClick={(e: MouseEvent) => { const tar = e.target as HTMLElement; if (['delete-shortcut', 'edit-shortcut'].includes(tar.parentElement?.dataset['testid'] as string)) return; load(site.url) }} />
         )}
         </For>
 

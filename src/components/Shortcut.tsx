@@ -7,7 +7,7 @@ interface ShortcutCardProps {
     index: number;
     onEdit: (index: number) => void;
     onDelete: (index: number) => void;
-    onClick: () => void;
+    onClick: (e: MouseEvent) => void;
 }
 
 const getFaviconUrl = (domain: string): string =>
@@ -16,7 +16,7 @@ const getFaviconUrl = (domain: string): string =>
 const ShortcutCard = (props: ShortcutCardProps) => {
 
     return (
-        <div onClick={() => props.onClick()} class={styles.shortcutCard} style={{ position: 'relative' }}>
+        <div onClick={(e) => props.onClick(e)} class={styles.shortcutCard} style={{ position: 'relative' }}>
             <a class={styles.shortcutLink}>
                 <div class={styles.shortcutIcon}>
                     <img src={getFaviconUrl(props.site.url)} alt={props.site.name} loading="lazy" />
@@ -25,7 +25,7 @@ const ShortcutCard = (props: ShortcutCardProps) => {
             </a>
 
             <div style={{ position: 'absolute', top: '8px', right: '8px', display: 'flex', gap: '8px' }}>
-                <button
+                <button data-testid="edit-shortcut"
                     onClick={() => props.onEdit(props.index)}
                     aria-label="Edit Shortcut"
                     class={`${styles['icon-btn']} ${styles['edit-btn']}`}
@@ -33,7 +33,7 @@ const ShortcutCard = (props: ShortcutCardProps) => {
                 >
                     <SquarePen size={18} />
                 </button>
-                <button
+                <button data-testid="delete-shortcut"
                     onClick={() => props.onDelete(props.index)}
                     aria-label="Delete Shortcut"
                     class={`${styles['icon-btn']} ${styles['delete-btn']}`}

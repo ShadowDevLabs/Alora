@@ -43,9 +43,7 @@ export default class SettingsManager {
             { name: 'TikTok', url: 'tiktok.com' },
             { name: 'Discord', url: 'discord.com' },
             { name: 'GitHub', url: 'github.com' },
-            { name: 'Spotify', url: 'spotify.com' },
             { name: 'Twitter', url: 'twitter.com' },
-            { name: 'ShuttleAI', url: 'shuttleai.com' }
         ]
     };
 }
