@@ -5,7 +5,8 @@ import Home from './pages/Home';
 import Settings from './pages/Settings';
 import Test from './pages/Test';
 import { Router, Route } from "@solidjs/router";
-
+import Games from './pages/Games';
+import Ai from './pages/Ai';
 const App: Component = () => {
   return (
     <Router>
@@ -13,6 +14,8 @@ const App: Component = () => {
       <Route path='/' component={ Home } />
       <Route path='/test' component={ Test } />
       <Route path='/settings' component={ Settings } />
+      <Route path='/books' component={ Games } />
+      <Route path='/ai' component={ Ai } />
     </Router>
 
   );

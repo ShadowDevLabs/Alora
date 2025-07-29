@@ -70,7 +70,7 @@ const NewPage = () => {
   };
 
   const getFaviconUrl = (domain: string): string =>
-    `https://www.google.com/s2/favicons?domain=${domain}&sz=48`;
+    `https://www.google.com/s2/favicons?domain=${domain}&sz=16`;
 
   return (
     <main class={styles.mainContent}>
