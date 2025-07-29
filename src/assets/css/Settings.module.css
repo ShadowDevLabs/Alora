@@ -1,3 +1,24 @@
+
+
+:root.spaceBlue {
+    --background: #020617;
+    --home-bg: url("https://4kwallpapers.com/images/wallpapers/blue-background-abstract-background-windows-11-3440x1440-8846.jpg");
+    --primary: #0f172a;
+    --primary-dark: #0a1220;
+    --secondary: #1e293b;
+    --accent: #3b82f6;
+    --accent-light: #60a5fa;
+    --accent-glow: rgba(59, 130, 246, 0.2);
+    --border: rgba(255, 255, 255, 0.08);
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --hover-danger: #f87171;
+    --active-tab: linear-gradient(145deg, #1e293b, #0f172a);
+    --glass: rgba(15, 23, 42, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.04);
+    --success: #22c55e;
+}
+
 body {
   background:
     linear-gradient(rgba(10, 10, 10, 0.85),

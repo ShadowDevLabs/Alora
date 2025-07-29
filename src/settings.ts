@@ -34,12 +34,25 @@ export default class SettingsManager {
         await db.put(STORE_NAME, value, key);
     }
 
-    static async applyTheme(): Promise<void> {
-        const theme = await this.get('theme');
-        document.documentElement.className = theme ?? 'dark';
+    static applyTheme(): void {
+        document.documentElement.className = localStorage.getItem('theme') ?? 'dark';
     }
 
+    static setupThemeSignal(createSignal: any, createEffect: any) {
+        const [theme, setTheme] = createSignal(localStorage.getItem('theme') ?? 'dark');
 
+        createEffect(() => {
+            const t = theme();
+            document.documentElement.className = t;
+            localStorage.setItem('theme', t);
+        });
+
+        window.addEventListener('storage', e => {
+            if (e.key === 'theme' && e.newValue) setTheme(e.newValue);
+        });
+
+        return { theme, setTheme };
+    }
 
 
     static defaultSettings: Settings = {

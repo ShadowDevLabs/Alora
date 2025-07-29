@@ -1,4 +1,4 @@
-import { createSignal, onMount, For, Show } from 'solid-js';
+import { createSignal, onMount, For, Show, onCleanup } from 'solid-js';
 import Plus from 'lucide-solid/icons/plus';
 import SquarePen from 'lucide-solid/icons/square-pen';
 import BookmarkPlus from 'lucide-solid/icons/bookmark-plus';
@@ -7,11 +7,18 @@ import styles from '../assets/css/New.module.css';
 import Settings from "../settings";
 import ShortcutCard from '../components/Shortcut';
 import { parse } from "../proxy"
-import '../assets/css/Themes.module.css';
+import '../assets/css/themes.css';
 
 let defaultShortcuts: Shortcut[] = [];
 
 const NewPage = () => {
+  onMount(() => {
+    const onStorage = (e: StorageEvent) => e.key === 'theme' && e.newValue && (document.documentElement.className !== e.newValue) && (document.documentElement.className = e.newValue);
+    window.addEventListener('storage', onStorage);
+    document.documentElement.className = localStorage.getItem('theme') ?? 'dark';
+    return () => window.removeEventListener('storage', onStorage);
+  });
+
   const [shortcuts, setShortcuts] = createSignal<Shortcut[]>(defaultShortcuts);
   const [showAddModal, setShowAddModal] = createSignal(false);
   const [showEditModal, setShowEditModal] = createSignal(false);

@@ -1,6 +1,7 @@
 import type { Component } from 'solid-js';
 import { createSignal, createEffect, For } from 'solid-js';
 import Settings from '../settings';
+import '../assets/css/themes.css';
 
 const Test: Component = () => {
     const [settings, setSettings] = createSignal(Settings.defaultSettings);

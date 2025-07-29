@@ -450,10 +450,10 @@
   width: 120px;
   height: 120px;
   background: radial-gradient(circle,
-      rgba(99, 102, 241, 0.6) 0%,
-      rgba(139, 92, 246, 0.4) 30%,
-      rgba(255, 255, 255, 0.2) 60%,
-      transparent 100%);
+    var(--accent) 0%,
+    var(--accent-light) 30%,
+    rgba(255, 255, 255, 0.2) 60%,
+    transparent 100%);
   border-radius: 50%;
   animation: glow 2s ease-in-out infinite alternate;
   filter: blur(10px);

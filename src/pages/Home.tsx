@@ -7,12 +7,21 @@ import Plus from 'lucide-solid/icons/plus';
 import Window from '../components/Window';
 import styles from '../assets/css/App.module.css';
 import { init as initProxy } from '../proxy';
+import '../assets/css/themes.css';
 
 // Initialize the proxy once
 window.addEventListener('transport', initProxy as EventListener);
 initProxy();
 
 const Home: Component = () => {
+  // Themes
+  onMount(() => {
+    const onStorage = (e: StorageEvent) => e.key === 'theme' && e.newValue && (document.documentElement.className !== e.newValue) && (document.documentElement.className = e.newValue);
+    window.addEventListener('storage', onStorage);
+    document.documentElement.className = localStorage.getItem('theme') ?? 'dark';
+    return () => window.removeEventListener('storage', onStorage);
+  });
+
   // --- Component State ---
   const params = useParams();
   const navigate = useNavigate();

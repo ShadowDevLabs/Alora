@@ -1,7 +1,7 @@
-import { For, createSignal } from 'solid-js';
+import { For, createSignal, onMount } from 'solid-js';
 import Chat from '../components/Chat';
 import styles from '../assets/css/Ai.module.css';
-import '../assets/css/Themes.module.css';
+import '../assets/css/themes.css';
 
 type ChatType = {
   from: 'user' | 'assistant';
@@ -14,6 +14,15 @@ const Ai = () => {
   ]);
   const [input, setInput] = createSignal('');
   const [loading, setLoading] = createSignal(false);
+
+  onMount(() => {
+    const onStorage = (e: StorageEvent) => e.key === 'theme' && e.newValue && (document.documentElement.className !== e.newValue) && (document.documentElement.className = e.newValue);
+    window.addEventListener('storage', onStorage);
+    document.documentElement.className = localStorage.getItem('theme') ?? 'dark';
+    return () => window.removeEventListener('storage', onStorage);
+  });
+
+
 
   const submission = async (e: KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {

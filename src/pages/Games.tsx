@@ -1,11 +1,18 @@
-import { Component, createSignal, For, createMemo } from 'solid-js'
+import { Component, createSignal, For, createMemo, onMount } from 'solid-js'
 import Game from '../components/Game'
 import games from '../assets/books.json'
 import styles from '../assets/css/Games.module.css'
-import '../assets/css/Themes.module.css';
+import '../assets/css/themes.css';
 
 
 const Games: Component = () => {
+  onMount(() => {
+  const onStorage = (e: StorageEvent) => e.key === 'theme' && e.newValue && (document.documentElement.className !== e.newValue) && (document.documentElement.className = e.newValue);
+  window.addEventListener('storage', onStorage);
+  document.documentElement.className = localStorage.getItem('theme') ?? 'dark';
+  return () => window.removeEventListener('storage', onStorage);
+});
+
   const [search, setSearch] = createSignal('')
 
   const filteredGxmes = createMemo(() =>
