@@ -1,5 +1,5 @@
 .App {
-  min-height: 100vh;
+  width: 100vw;
   height: 100vh;
   margin: 0;
   color: var(--text);
@@ -7,30 +7,37 @@
   background-color: var(--background);
   background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1.5px, transparent 1.5px);
   background-size: 24px 24px;
-  overflow: hidden;
   position: relative;
+  cursor: grab;
+  overflow: hidden;
+  /* Hide scrollbars */
 }
+
+.App:active {
+  cursor: grabbing;
+}
+
 
 /*==============================
 =            ROOT              =
 ==============================*/
 :root {
-    --background: #000000;
-    --home-bg: url("/src/assets/images/alora_bg.png");
-    --primary: #0a0a0a;
-    --primary-dark: #050505;
-    --secondary: #1a1a1a;
-    --accent: #6366f1;
-    --accent-light: #8b5cf6;
-    --accent-glow: rgba(99, 102, 241, 0.2);
-    --border: rgba(255, 255, 255, 0.1);
-    --text: #ffffff;
-    --text-muted: #a1a1aa;
-    --hover-danger: #ef4444;
-    --active-tab: linear-gradient(145deg, #1a1a1a, var(--secondary));
-    --glass: rgba(10, 10, 10, 0.8);
-    --glass-border: rgba(255, 255, 255, 0.05);
-    --success: #10b981;
+  --background: #000000;
+  --home-bg: url("/src/assets/images/alora_bg.png");
+  --primary: #0a0a0a;
+  --primary-dark: #050505;
+  --secondary: #1a1a1a;
+  --accent: #6366f1;
+  --accent-light: #8b5cf6;
+  --accent-glow: rgba(99, 102, 241, 0.2);
+  --border: rgba(255, 255, 255, 0.1);
+  --text: #ffffff;
+  --text-muted: #a1a1aa;
+  --hover-danger: #ef4444;
+  --active-tab: linear-gradient(145deg, #1a1a1a, var(--secondary));
+  --glass: rgba(10, 10, 10, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --success: #10b981;
 }
 
 .window-exit-active {

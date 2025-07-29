@@ -11,6 +11,7 @@ const [windows, setWindows] = createSignal<{ id: string, url: string, closing?: 
 const [stackingOrder, setStackingOrder] = createSignal<string[]>([]);
 window.addEventListener('transport', initProxy as EventListener);
 initProxy();
+
 function Dock() {
   return (
     <div class={styles.dock}>
@@ -18,7 +19,6 @@ function Dock() {
       <button class={styles.button}><ZoomOut size='18' /></button>
       <button class={styles.button} onClick={() => addWindow('alora://settings')}><SlidersHorizontal size='18' /></button>
     </div>
-
   );
 }
 
@@ -47,12 +47,62 @@ function bringToFront(id: string) {
 }
 
 const Home: Component = () => {
+  let appRef: HTMLDivElement | undefined;
+  const [isPanning, setIsPanning] = createSignal(false);
+  const [lastPos, setLastPos] = createSignal({ x: 0, y: 0 });
+  const [panOffset, setPanOffset] = createSignal({ x: 0, y: 0 });
+
   if (windows().length === 0) {
     addWindow();
   }
 
+  const handleMouseDown = (e: MouseEvent) => {
+    if (e.target !== appRef) return;
+    setIsPanning(true);
+    setLastPos({ x: e.clientX, y: e.clientY });
+    if (appRef) appRef.style.cursor = 'grabbing';
+  };
+
+  const handleMouseUp = () => {
+    setIsPanning(false);
+    if (appRef) appRef.style.cursor = 'grab';
+  };
+
+  const handleMouseLeave = () => {
+    setIsPanning(false);
+    if (appRef) appRef.style.cursor = 'grab';
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isPanning() || !appRef) return;
+    const dx = e.clientX - lastPos().x;
+    const dy = e.clientY - lastPos().y;
+    setPanOffset({
+      x: panOffset().x + dx,
+      y: panOffset().y + dy
+    });
+    setLastPos({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleWheel = (e: WheelEvent) => {
+    e.preventDefault();
+    setPanOffset(prev => ({
+      x: prev.x - (e.shiftKey ? e.deltaY : 0),
+      y: prev.y - (e.shiftKey ? 0 : e.deltaY)
+    }));
+  };
+
   return (
-    <div class={styles.App}>
+    <div
+      ref={appRef}
+      class={styles.App}
+      style={{ 'background-position': `${panOffset().x}px ${panOffset().y}px` }}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
+      onWheel={handleWheel}
+    >
       <Dock />
       <For each={windows()}>{(item) => (
         <Window
@@ -62,6 +112,7 @@ const Home: Component = () => {
           onFocus={bringToFront}
           onClose={closeWindow}
           isClosing={item.closing}
+          panOffset={panOffset()}
         />
       )}</For>
     </div>

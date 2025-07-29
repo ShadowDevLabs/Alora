@@ -26,10 +26,16 @@ interface WindowProps {
     onClose: (id: string) => void;
     class?: string;
     isClosing?: boolean;
+    panOffset: { x: number, y: number };
 }
 
 const Window: Component<WindowProps> = (props) => {
-    const [pos, setPos] = createSignal({ x: window.innerWidth / 2 - 475, y: -100 });
+    const [pos, setPos] = createSignal({
+        x: (window.innerWidth / 2 - 475) - props.panOffset.x,
+        y: (window.innerHeight / 2 - 300) - props.panOffset.y
+    });
+    const [size, setSize] = createSignal({ width: 950, height: 600 });
+    const [isInteracting, setIsInteracting] = createSignal(false); // For drag/resize focus
     const [fs, setFs] = createSignal(false);
     const [menu, setMenu] = createSignal(false);
     const [href, setHref] = createSignal<string>(props.startUrl);
@@ -78,6 +84,8 @@ const Window: Component<WindowProps> = (props) => {
     const handleMouseDown = (e: MouseEvent) => {
         e.preventDefault();
         if (e.button !== 0 || fs()) return;
+        setIsInteracting(true);
+        props.onFocus(props.id);
         const initialPos = pos();
         const initialMousePos = { x: e.clientX, y: e.clientY };
         const handleMouseMove = (e: MouseEvent) => {
@@ -86,9 +94,66 @@ const Window: Component<WindowProps> = (props) => {
             setPos({ x: initialPos.x + dx, y: initialPos.y + dy });
         };
         const handleMouseUp = () => {
+            setIsInteracting(false);
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseup', handleMouseUp);
         };
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+    };
+
+    const handleResizeMouseDown = (e: MouseEvent, direction: string) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsInteracting(true);
+        props.onFocus(props.id);
+
+        const initialPos = pos();
+        const initialSize = size();
+        const initialMousePos = { x: e.clientX, y: e.clientY };
+        const minWidth = 440;
+        const minHeight = 220;
+
+        const handleMouseMove = (e: MouseEvent) => {
+            const dx = e.clientX - initialMousePos.x;
+            const dy = e.clientY - initialMousePos.y;
+
+            const finalPos = { ...pos() };
+            const finalSize = { ...size() };
+
+            if (direction.includes('right')) {
+                const newWidth = initialSize.width + dx;
+                if (newWidth >= minWidth) finalSize.width = newWidth;
+            }
+            if (direction.includes('left')) {
+                const newWidth = initialSize.width - dx;
+                if (newWidth >= minWidth) {
+                    finalSize.width = newWidth;
+                    finalPos.x = initialPos.x + dx;
+                }
+            }
+            if (direction.includes('bottom')) {
+                const newHeight = initialSize.height + dy;
+                if (newHeight >= minHeight) finalSize.height = newHeight;
+            }
+            if (direction.includes('top')) {
+                const newHeight = initialSize.height - dy;
+                if (newHeight >= minHeight) {
+                    finalSize.height = newHeight;
+                    finalPos.y = initialPos.y + dy;
+                }
+            }
+
+            setPos(finalPos);
+            setSize(finalSize);
+        };
+
+        const handleMouseUp = () => {
+            setIsInteracting(false);
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        };
+
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseUp);
     };
@@ -137,7 +202,9 @@ const Window: Component<WindowProps> = (props) => {
             class={`${styles.tab} ${props.class || ''}`}
             style={
                 !fs() ? {
-                    'transform': `translate(${pos().x}px, ${pos().y}px) scale(${props.isClosing ? 0.9 : 1})`,
+                    'width': `${size().width}px`,
+                    'height': `${size().height}px`,
+                    'transform': `translate(${pos().x + props.panOffset.x}px, ${pos().y + props.panOffset.y}px) scale(${props.isClosing ? 0.9 : 1})`,
                     'opacity': props.isClosing ? 0 : 1,
                     'position': 'absolute',
                     'z-index': props.zIndex + 10,
@@ -152,6 +219,15 @@ const Window: Component<WindowProps> = (props) => {
                 }
             }
         >
+            <div class={`${styles.resizeHandle} ${styles.topLeft}`} onMouseDown={(e) => handleResizeMouseDown(e, 'top-left')}></div>
+            <div class={`${styles.resizeHandle} ${styles.top}`} onMouseDown={(e) => handleResizeMouseDown(e, 'top')}></div>
+            <div class={`${styles.resizeHandle} ${styles.topRight}`} onMouseDown={(e) => handleResizeMouseDown(e, 'top-right')}></div>
+            <div class={`${styles.resizeHandle} ${styles.left}`} onMouseDown={(e) => handleResizeMouseDown(e, 'left')}></div>
+            <div class={`${styles.resizeHandle} ${styles.right}`} onMouseDown={(e) => handleResizeMouseDown(e, 'right')}></div>
+            <div class={`${styles.resizeHandle} ${styles.bottomLeft}`} onMouseDown={(e) => handleResizeMouseDown(e, 'bottom-left')}></div>
+            <div class={`${styles.resizeHandle} ${styles.bottom}`} onMouseDown={(e) => handleResizeMouseDown(e, 'bottom')}></div>
+            <div class={`${styles.resizeHandle} ${styles.bottomRight}`} onMouseDown={(e) => handleResizeMouseDown(e, 'bottom-right')}></div>
+
             <div class={styles.tabBar} onMouseDown={handleMouseDown}>
                 <div class={styles.info}>
                     <img src={iconUrl()} class={styles.favicon} />
@@ -166,8 +242,8 @@ const Window: Component<WindowProps> = (props) => {
 
             <div class={styles.browserContainer}>
                 <div class={styles.navControls}>
-                    <button class={styles.navBtn} disabled={!iframeRef?.contentWindow?.navigation?.canGoBack} onClick={goBack} id="backBtn" title="Go back"><ArrowLeft /></button>
-                    <button class={styles.navBtn} disabled={!iframeRef?.contentWindow?.navigation?.canGoForward} onClick={goForward} id="forwardBtn" title="Go forward"><ArrowRight /></button>
+                    <button class={styles.navBtn} disabled={!iframeRef?.contentWindow?.navigation.canGoBack} onClick={goBack} id="backBtn" title="Go back"><ArrowLeft /></button>
+                    <button class={styles.navBtn} disabled={!iframeRef?.contentWindow?.navigation.canGoForward} onClick={goForward} id="forwardBtn" title="Go forward"><ArrowRight /></button>
                     <button class={styles.navBtn} onClick={reloadFrame} id="refreshBtn" title="Refresh"><Reload /></button>
                 </div>
                 <div class={styles.addressBar}>
@@ -194,7 +270,7 @@ const Window: Component<WindowProps> = (props) => {
             </div>
             <IFrame
                 ref={(el) => (iframeRef = el)}
-                class={styles.tabContent}
+                class={`${styles.tabContent} ${isInteracting() ? styles.pointerEventsNone : ''}`}
                 src={src()}
                 onLoad={handleIframeLoad}
             />
