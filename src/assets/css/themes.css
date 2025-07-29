@@ -37,23 +37,24 @@
 }
 
 :root.spaceBlue {
-    --background: #020617;
-    --home-bg: url("https://4kwallpapers.com/images/wallpapers/blue-background-abstract-background-windows-11-3440x1440-8846.jpg");
-    --primary: #0f172a;
-    --primary-dark: #0a1220;
-    --secondary: #1e293b;
-    --accent: #3b82f6;
-    --accent-light: #60a5fa;
-    --accent-glow: rgba(59, 130, 246, 0.2);
-    --border: rgba(255, 255, 255, 0.08);
-    --text: #e2e8f0;
-    --text-muted: #94a3b8;
-    --hover-danger: #f87171;
-    --active-tab: linear-gradient(145deg, #1e293b, #0f172a);
-    --glass: rgba(15, 23, 42, 0.75);
-    --glass-border: rgba(255, 255, 255, 0.04);
-    --success: #22c55e;
+  --background: rgba(2, 7, 27, 0.259);
+  --home-bg: url("https://media.gettyimages.com/id/450145381/video/dark-background.jpg?s=640x640&k=20&c=I47pM02fVxP2pvvWPc9N-Va3CI3aJEsteUysaVHvv5I=");
+  --primary: #0a0f20;
+  --primary-dark: #040815;
+  --secondary: #121c30;
+  --accent: #1d4ed8;
+  --accent-light: #3b82f6;
+  --accent-glow: rgba(29, 78, 216, 0.12);
+  --border: rgba(255, 255, 255, 0.05);
+  --text: #dbeafe;
+  --text-muted: #64748b;
+  --hover-danger: #dc2626;
+  --active-tab: linear-gradient(145deg, #121c30, #0a0f20);
+  --glass: rgba(10, 15, 32, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.02);
+  --success: #7c92f1;
 }
+
 
 :root.operaGX {
   --background: linear-gradient(145deg, #0d0606, #040000);
