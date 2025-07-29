@@ -7,6 +7,7 @@ import styles from '../assets/css/New.module.css';
 import Settings from "../settings";
 import ShortcutCard from '../components/Shortcut';
 import { parse } from "../proxy"
+import '../assets/css/Themes.module.css';
 
 let defaultShortcuts: Shortcut[] = [];
 

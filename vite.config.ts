@@ -1,3 +1,4 @@
+// vite.config.ts
 import { defineConfig, ViteDevServer } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
@@ -11,13 +12,11 @@ import sirv from 'sirv';
 const devProxyAssets = () => ({
   name: 'dev-proxy-assets',
   configureServer(server: ViteDevServer) {
-    // Your existing static asset middleware
     server.middlewares.use('/uv/', sirv('public/uv', { dev: true }));
     server.middlewares.use('/bare-mux/', sirv(baremuxPath, { dev: true }));
     server.middlewares.use('/uv/', sirv(uvPath, { dev: true }));
     server.middlewares.use('/epoxy/', sirv(epoxyPath, { dev: true }));
     server.middlewares.use('/scram/', sirv(scramjetPath, { dev: true }));
-
     server.middlewares.use('/api/ask', async (req, res, next) => {
       if (req.method !== 'POST') {
         return next();
@@ -63,6 +62,14 @@ export default defineConfig({
       ],
     }),
   ],
+  server: {
+    proxy: {
+      '/ws': {
+        target: 'ws://localhost:9001',
+        ws: true,
+      },
+    },
+  },
   build: {
     target: 'esnext',
   },

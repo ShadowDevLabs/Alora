@@ -8,7 +8,7 @@ interface GameProps {
   img: string
 }
 const Game: Component<GameProps> = (props) => {
-  const href = `books/files/${props.root}/${props.file}`
+  const href = `https://goshadow.net/books/files/${props.root}/${props.file}`
   const imgSrc = `http://phantom.lol/books/files/${props.root}/${props.img}`
 
   return (

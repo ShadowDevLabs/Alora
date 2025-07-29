@@ -1,6 +1,7 @@
 import type { Component } from 'solid-js';
 import styles from '../assets/css/Window.module.css';
 import { createSignal, createEffect, onCleanup, onMount, Show } from 'solid-js';
+import { useParams } from "@solidjs/router"; // Import useParams
 import Handle from 'lucide-solid/icons/ellipsis';
 import Menu from 'lucide-solid/icons/logs';
 import Reload from 'lucide-solid/icons/rotate-cw';
@@ -14,28 +15,31 @@ import Gamepad2 from 'lucide-solid/icons/gamepad-2';
 import Sparkles from 'lucide-solid/icons/sparkles';
 import AppWindow from 'lucide-solid/icons/app-window';
 import Maximize from 'lucide-solid/icons/maximize';
-import { doubleCsrf } from "csrf-csrf";
 import IFrame from './IFrame';
 import { parse, readable, icon } from '../proxy';
 
+// --- Updated Props Interface ---
 interface WindowProps {
     id: string;
     startUrl: string;
     zIndex: number;
     onFocus: (id: string) => void;
     onClose: (id: string) => void;
+    ws: WebSocket;
     class?: string;
     isClosing?: boolean;
     panOffset: { x: number, y: number };
 }
 
 const Window: Component<WindowProps> = (props) => {
+    // --- State and Refs ---
+    const params = useParams(); // Get session ID from URL
     const [pos, setPos] = createSignal({
         x: (window.innerWidth / 2 - 475) - props.panOffset.x,
         y: (window.innerHeight / 2 - 475) - props.panOffset.y
     });
     const [size, setSize] = createSignal({ width: 950, height: 600 });
-    const [isInteracting, setIsInteracting] = createSignal(false); // For drag/resize focus
+    const [isInteracting, setIsInteracting] = createSignal(false);
     const [fs, setFs] = createSignal(false);
     const [menu, setMenu] = createSignal(false);
     const [href, setHref] = createSignal<string>(props.startUrl);
@@ -46,60 +50,123 @@ const Window: Component<WindowProps> = (props) => {
     let searchRef: HTMLInputElement | undefined;
     let iframeRef: HTMLIFrameElement | undefined;
 
-    onMount(async () => {
-        window.dispatchEvent(new CustomEvent('transport', { detail: { type: 'init' } }));
-        if (searchRef) {
-            searchRef.value = href();
+    // --- WebSocket Helper Function ---
+    // Standardizes sending messages for the live share session
+    const sendUpdate = (type: string, data: object) => {
+        if (props.ws && props.ws.readyState === WebSocket.OPEN) {
+            props.ws.send(JSON.stringify({
+                session: params.sessionId, // Include session ID
+                data: { type, id: props.id, ...data }
+            }));
         }
-        setSrc(await parse(href()));
+    };
+
+    // --- Effects ---
+    onMount(() => {
+        // Initial navigation doesn't need to be sent, as the window is new
+        search(props.startUrl, true);
     });
 
+    // Main effect for handling incoming WebSocket messages
+    createEffect(() => {
+        const handleWsMessage = (event: MessageEvent) => {
+            try {
+                const message = JSON.parse(event.data);
+                // Only act on messages for this specific window instance
+                if (message.id !== props.id) return;
+
+                switch (message.type) {
+                    case 'move':
+                        if (message.pos) setPos(message.pos);
+                        break;
+                    case 'resize':
+                        if (message.size) setSize(message.size);
+                        break;
+                    case 'navigate':
+                        if (message.src) setSrc(message.src);
+                        if (message.href) {
+                            setHref(message.href);
+                            if (searchRef) searchRef.value = message.href;
+                        }
+                        if (message.title) setTitle(message.title);
+                        break;
+                }
+            } catch (e) {
+                console.error("Failed to parse WebSocket message", e);
+            }
+        };
+
+        if (props.ws) {
+            props.ws.addEventListener('message', handleWsMessage);
+            onCleanup(() => props.ws.removeEventListener('message', handleWsMessage));
+        }
+    });
+
+    // Effect for handling navigation messages from within the iframe
     createEffect(() => {
         const handleMessage = (event: MessageEvent) => {
-            if (event.source !== iframeRef?.contentWindow || !event.data || typeof event.data !== 'object') {
+            if (event.source !== iframeRef?.contentWindow || !event.data || event.data.type !== 'navigation') {
                 return;
             }
-
-            if (event.data.type === 'navigation') {
-                const newUrl = readable(new URL(event.data.url.toString()).pathname);
-                setHref(newUrl);
-                setTitle(event.data.title || 'New Tab');
-                if (searchRef) {
-                    searchRef.value = newUrl;
-                }
-            }
+            const newUrl = readable(new URL(event.data.url.toString()).pathname);
+            const newTitle = event.data.title || 'New Tab';
+            setHref(newUrl);
+            setTitle(newTitle);
+            if (searchRef) searchRef.value = newUrl;
+            // Send navigation update to other clients
+            sendUpdate('navigate', { href: newUrl, src: event.data.url, title: newTitle });
         };
         window.addEventListener('message', handleMessage);
         onCleanup(() => window.removeEventListener('message', handleMessage));
     });
 
+    // Effect for handling browser fullscreen change
     createEffect(() => {
-        const onFullscreenChange = () => {
-            setFs(document.fullscreenElement != null);
-        };
+        const onFullscreenChange = () => setFs(document.fullscreenElement != null);
         document.addEventListener('fullscreenchange', onFullscreenChange);
         onCleanup(() => document.removeEventListener('fullscreenchange', onFullscreenChange));
     });
 
+    // --- Functions ---
+    async function search(url?: string, isInitial = false) {
+        const inputVal = url || searchRef?.value || 'alora://new';
+        const parsedSrc = await parse(inputVal);
+        const readableHref = readable(parsedSrc);
+
+        setHref(readableHref);
+        setSrc(parsedSrc);
+        setTitle('Loading...');
+        if (searchRef) searchRef.value = readableHref;
+
+        // Only send update if it's not the initial load of the window
+        if (!isInitial) {
+            sendUpdate('navigate', { href: readableHref, src: parsedSrc, title: 'Loading...' });
+        }
+    }
+
     const handleMouseDown = (e: MouseEvent) => {
-        e.preventDefault();
         if (e.button !== 0 || fs()) return;
         setIsInteracting(true);
         props.onFocus(props.id);
-        const initialPos = pos();
-        const initialMousePos = { x: e.clientX, y: e.clientY };
-        const handleMouseMove = (e: MouseEvent) => {
-            const dx = e.clientX - initialMousePos.x;
-            const dy = e.clientY - initialMousePos.y;
-            setPos({ x: initialPos.x + dx, y: initialPos.y + dy });
+        const startPos = pos();
+        const startMouse = { x: e.clientX, y: e.clientY };
+
+        const doDrag = (moveEvent: MouseEvent) => {
+            const dx = moveEvent.clientX - startMouse.x;
+            const dy = moveEvent.clientY - startMouse.y;
+            setPos({ x: startPos.x + dx, y: startPos.y + dy });
         };
-        const handleMouseUp = () => {
+
+        const onDragEnd = () => {
+            document.removeEventListener('mousemove', doDrag);
+            document.removeEventListener('mouseup', onDragEnd);
             setIsInteracting(false);
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
+            // Send final position to server
+            sendUpdate('move', { pos: pos() });
         };
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
+
+        document.addEventListener('mousemove', doDrag);
+        document.addEventListener('mouseup', onDragEnd);
     };
 
     const handleResizeMouseDown = (e: MouseEvent, direction: string) => {
@@ -108,54 +175,44 @@ const Window: Component<WindowProps> = (props) => {
         setIsInteracting(true);
         props.onFocus(props.id);
 
-        const initialPos = pos();
-        const initialSize = size();
-        const initialMousePos = { x: e.clientX, y: e.clientY };
-        const minWidth = 440;
-        const minHeight = 220;
+        const startSize = size();
+        const startPos = pos();
+        const startMouse = { x: e.clientX, y: e.clientY };
+        const minWidth = 440, minHeight = 220;
 
-        const handleMouseMove = (e: MouseEvent) => {
-            const dx = e.clientX - initialMousePos.x;
-            const dy = e.clientY - initialMousePos.y;
+        const doResize = (moveEvent: MouseEvent) => {
+            const dx = moveEvent.clientX - startMouse.x;
+            const dy = moveEvent.clientY - startMouse.y;
+            let newPos = { ...pos() };
+            let newSize = { ...size() };
 
-            const finalPos = { ...pos() };
-            const finalSize = { ...size() };
-
-            if (direction.includes('right')) {
-                const newWidth = initialSize.width + dx;
-                if (newWidth >= minWidth) finalSize.width = newWidth;
-            }
+            if (direction.includes('right')) newSize.width = Math.max(minWidth, startSize.width + dx);
+            if (direction.includes('bottom')) newSize.height = Math.max(minHeight, startSize.height + dy);
             if (direction.includes('left')) {
-                const newWidth = initialSize.width - dx;
-                if (newWidth >= minWidth) {
-                    finalSize.width = newWidth;
-                    finalPos.x = initialPos.x + dx;
-                }
-            }
-            if (direction.includes('bottom')) {
-                const newHeight = initialSize.height + dy;
-                if (newHeight >= minHeight) finalSize.height = newHeight;
+                const updatedWidth = Math.max(minWidth, startSize.width - dx);
+                newSize.width = updatedWidth;
+                newPos.x = startPos.x + (startSize.width - updatedWidth);
             }
             if (direction.includes('top')) {
-                const newHeight = initialSize.height - dy;
-                if (newHeight >= minHeight) {
-                    finalSize.height = newHeight;
-                    finalPos.y = initialPos.y + dy;
-                }
+                const updatedHeight = Math.max(minHeight, startSize.height - dy);
+                newSize.height = updatedHeight;
+                newPos.y = startPos.y + (startSize.height - updatedHeight);
             }
-
-            setPos(finalPos);
-            setSize(finalSize);
+            setPos(newPos);
+            setSize(newSize);
         };
 
-        const handleMouseUp = () => {
+        const onResizeEnd = () => {
+            document.removeEventListener('mousemove', doResize);
+            document.removeEventListener('mouseup', onResizeEnd);
             setIsInteracting(false);
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
+            // Send final size and position to server
+            sendUpdate('resize', { size: size() });
+            sendUpdate('move', { pos: pos() });
         };
 
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
+        document.addEventListener('mousemove', doResize);
+        document.addEventListener('mouseup', onResizeEnd);
     };
 
     const handleIframeLoad = () => {
@@ -163,21 +220,15 @@ const Window: Component<WindowProps> = (props) => {
             if (!iframeRef?.contentWindow) return;
             const iframeDoc = iframeRef.contentWindow.document;
             iframeDoc.body.addEventListener('mousedown', () => props.onFocus(props.id));
-            setTitle(iframeDoc.title || 'New Tab');
+            if (title() === 'Loading...') {
+                setTitle(iframeDoc.title || 'New Tab');
+                // Optional: send final title to others if it wasn't available before
+                sendUpdate('navigate', { title: iframeDoc.title || 'New Tab' });
+            }
         } catch (err) {
             console.warn("Couldn't attach listener: " + err);
         }
     };
-    async function search(url?: string) {
-        const inputVal = url || (searchRef as HTMLInputElement).value;
-        const parsed: string = await parse(inputVal);
-        const clean: string = readable(parsed);
-        setHref(clean);
-        setSrc(parsed);
-        if (searchRef) {
-            searchRef.value = clean;
-        }
-    }
 
     const goBack = () => iframeRef?.contentWindow?.history.back();
     const goForward = () => iframeRef?.contentWindow?.history.forward();
@@ -187,13 +238,11 @@ const Window: Component<WindowProps> = (props) => {
         setFs(!fs());
     }
     const toggleFullscreen = () => {
-        if (!document.fullscreenElement) {
-            fsRef?.requestFullscreen();
-        } else {
-            document.exitFullscreen();
-        }
+        if (!document.fullscreenElement) fsRef?.requestFullscreen();
+        else document.exitFullscreen();
     };
 
+    // --- Render ---
     return (
         <div
             ref={fsRef}
@@ -208,13 +257,8 @@ const Window: Component<WindowProps> = (props) => {
                     'position': 'absolute',
                     'z-index': props.zIndex + 10,
                 } : {
-                    'position': 'fixed',
-                    'margin': '0',
-                    'top': '0px',
-                    'left': '0px',
-                    'width': '100%',
-                    'height': '100%',
-                    'z-index': 100
+                    'position': 'fixed', 'margin': '0', 'top': '0px', 'left': '0px',
+                    'width': '100%', 'height': '100%', 'z-index': 100
                 }
             }
         >
@@ -241,13 +285,13 @@ const Window: Component<WindowProps> = (props) => {
 
             <div class={styles.browserContainer}>
                 <div class={styles.navControls}>
-                    <button class={styles.navBtn} disabled={!iframeRef?.contentWindow?.navigation.canGoBack} onClick={goBack} id="backBtn" title="Go back"><ArrowLeft /></button>
-                    <button class={styles.navBtn} disabled={!iframeRef?.contentWindow?.navigation.canGoForward} onClick={goForward} id="forwardBtn" title="Go forward"><ArrowRight /></button>
-                    <button class={styles.navBtn} onClick={reloadFrame} id="refreshBtn" title="Refresh"><Reload /></button>
+                    <button class={styles.navBtn} disabled={!iframeRef?.contentWindow?.navigation.canGoBack} onClick={goBack} title="Go back"><ArrowLeft /></button>
+                    <button class={styles.navBtn} disabled={!iframeRef?.contentWindow?.navigation.canGoForward} onClick={goForward} title="Go forward"><ArrowRight /></button>
+                    <button class={styles.navBtn} onClick={reloadFrame} title="Refresh"><Reload /></button>
                 </div>
                 <div class={styles.addressBar}>
                     <form onSubmit={(e) => { e.preventDefault(); search(); }} >
-                        <input ref={searchRef} type="text" class={styles.addressInput} placeholder="Search or enter web address" id="addressInput" />
+                        <input ref={searchRef} type="text" class={styles.addressInput} placeholder="Search or enter web address" />
                     </form>
                 </div>
                 <div class={styles.menuWrapper}>
@@ -257,10 +301,8 @@ const Window: Component<WindowProps> = (props) => {
                             <div class={styles.menuItem}><Plus class={styles.menuItemIcon} /> New Tab</div>
                             <div class={styles.menuItem} onclick={() => search("alora://settings")}><Settings class={styles.menuItemIcon} /> Settings</div>
                             <div class={styles.menuItem} onclick={() => search("alora://books")} ><Gamepad2 class={styles.menuItemIcon} /> Games</div>
-                            <div class={styles.menuItem} onclick={() => search("alora://ai")} ><Sparkles class={styles.menuItemIcon} /> Ai</div>
+                            <div class={styles.menuItem} onclick={() => search("alora://ai")}><Sparkles class={styles.menuItemIcon} /> Ai</div>
                             <div class={styles.menuDivider}></div>
-                            <div class={styles.menuItem}><AppWindow class={styles.menuItemIcon} /> Open Tab Abt:Blnk</div>
-                            <div class={styles.menuItem}><AppWindow class={styles.menuItemIcon} /> Open Wnd Abt:Blnk</div>
                             <div class={styles.menuItem} onClick={partialFs}><Maximize class={styles.menuItemIcon} /> Fullscreen Tab</div>
                             <div class={styles.menuItem} onClick={toggleFullscreen}><FullscreenIcon class={styles.menuItemIcon} /> Fullscreen Window</div>
                         </div>

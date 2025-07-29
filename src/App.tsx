@@ -1,3 +1,4 @@
+// src/App.tsx
 import type { Component } from 'solid-js';
 
 import NewPage from './pages/NewPage';
@@ -7,15 +8,16 @@ import Test from './pages/Test';
 import { Router, Route } from "@solidjs/router";
 import Games from './pages/Games';
 import Ai from './pages/Ai';
+
 const App: Component = () => {
   return (
     <Router>
-      <Route path='/new' component={ NewPage } />
-      <Route path='/' component={ Home } />
-      <Route path='/test' component={ Test } />
-      <Route path='/settings' component={ Settings } />
-      <Route path='/books' component={ Games } />
-      <Route path='/ai' component={ Ai } />
+      <Route path='/new' component={NewPage} />
+      <Route path='/:sessionId?' component={Home} />
+      <Route path='/test' component={Test} />
+      <Route path='/settings' component={Settings} />
+      <Route path='/books' component={Games} />
+      <Route path='/ai' component={Ai} />
     </Router>
 
   );

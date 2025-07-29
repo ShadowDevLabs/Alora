@@ -1,22 +1,3 @@
-:root {
-    --background: #000000;
-    --home-bg: url("/src/assets/images/alora_bg.png");
-    --primary: #0a0a0a;
-    --primary-dark: #050505;
-    --secondary: #1a1a1a;
-    --accent: #6366f1;
-    --accent-light: #8b5cf6;
-    --accent-glow: rgba(99, 102, 241, 0.2);
-    --border: rgba(255, 255, 255, 0.1);
-    --text: #ffffff;
-    --text-muted: #a1a1aa;
-    --hover-danger: #ef4444;
-    --active-tab: linear-gradient(145deg, #1a1a1a, var(--secondary));
-    --glass: rgba(10, 10, 10, 0.8);
-    --glass-border: rgba(255, 255, 255, 0.05);
-    --success: #10b981;
-}
-
 .gamesPage {
   min-height: 100vh;
   background: var(--home-bg);
@@ -60,10 +41,11 @@
   outline: none;
   border-color: var(--accent);
 }
+
 .gcontainer {
   display: grid;
   grid-template-columns: repeat(auto-fit, 250px);
-  justify-content: center; 
+  justify-content: center;
   gap: 24px;
   width: 90vw;
   max-width: 1500px;
@@ -71,7 +53,7 @@
 }
 
 .game {
-  width: 250px; 
+  width: 250px;
   height: 240px;
   background: linear-gradient(145deg, var(--secondary), var(--primary));
   border-radius: 20px;

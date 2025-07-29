@@ -1,6 +1,7 @@
 import { For, createSignal } from 'solid-js';
 import Chat from '../components/Chat';
 import styles from '../assets/css/Ai.module.css';
+import '../assets/css/Themes.module.css';
 
 type ChatType = {
   from: 'user' | 'assistant';

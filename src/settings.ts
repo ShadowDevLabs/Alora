@@ -34,6 +34,14 @@ export default class SettingsManager {
         await db.put(STORE_NAME, value, key);
     }
 
+    static async applyTheme(): Promise<void> {
+        const theme = await this.get('theme');
+        document.documentElement.className = theme ?? 'dark';
+    }
+
+
+
+
     static defaultSettings: Settings = {
         searchEngine: "https://search.brave.com/search?q={query}",
         theme: "dark",

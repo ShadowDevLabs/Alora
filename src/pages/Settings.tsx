@@ -8,6 +8,7 @@ import Code from 'lucide-solid/icons/code-xml';
 import General from '../components/settings/General';
 import Themes from '../components/settings/Themes';
 import Search from '../components/settings/Search';
+import '../assets/css/Themes.module.css';
 
 const Settings: Component = () => {
   const [content, setContent] = createSignal<'general' | 'themes' | 'search'>('general');

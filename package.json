@@ -7,11 +7,14 @@
     "start": "vite",
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "start:server": "tsx watch server/index.ts"
   },
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^24.1.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.3",
     "typescript": "^5.8.3",
     "vite": "^6.0.0",
     "vite-plugin-solid": "^2.11.6"
@@ -21,13 +24,16 @@
     "@mercuryworkshop/bare-mux": "^2.1.7",
     "@mercuryworkshop/epoxy-transport": "^2.1.27",
     "@mercuryworkshop/scramjet": "^1.0.2",
+    "@motionone/solid": "^10.16.4",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.15.3",
     "@titaniumnetwork-dev/ultraviolet": "^3.2.10",
     "csrf-csrf": "^4.0.3",
+    "draggable": "^4.2.0",
     "idb": "^8.0.3",
     "lucide-solid": "^0.525.0",
     "sirv": "^3.0.1",
+    "solid-draggable": "^0.1.0",
     "solid-js": "^1.9.5",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.44.0",
     "vite-plugin-static-copy": "^3.1.1"

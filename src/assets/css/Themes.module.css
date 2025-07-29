@@ -1,0 +1,37 @@
+:root {
+    --background: #000000;
+    --home-bg: url("/src/assets/images/alora_dark.png");
+    --primary: #0a0a0a;
+    --primary-dark: #050505;
+    --secondary: #1a1a1a;
+    --accent: #6366f1;
+    --accent-light: #8b5cf6;
+    --accent-glow: rgba(99, 102, 241, 0.2);
+    --border: rgba(255, 255, 255, 0.1);
+    --text: #ffffff;
+    --text-muted: #a1a1aa;
+    --hover-danger: #ef4444;
+    --active-tab: linear-gradient(145deg, #1a1a1a, var(--secondary));
+    --glass: rgba(10, 10, 10, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.05);
+    --success: #10b981;
+}
+
+:root.spaceBlue {
+    --background: #020617;
+    --home-bg: url("https://4kwallpapers.com/images/wallpapers/blue-background-abstract-background-windows-11-3440x1440-8846.jpg");
+    --primary: #0f172a;
+    --primary-dark: #0a1220;
+    --secondary: #1e293b;
+    --accent: #3b82f6;
+    --accent-light: #60a5fa;
+    --accent-glow: rgba(59, 130, 246, 0.2);
+    --border: rgba(255, 255, 255, 0.08);
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --hover-danger: #f87171;
+    --active-tab: linear-gradient(145deg, #1e293b, #0f172a);
+    --glass: rgba(15, 23, 42, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.04);
+    --success: #22c55e;
+}

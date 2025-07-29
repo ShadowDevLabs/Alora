@@ -2,6 +2,8 @@ import { Component, createSignal, For, createMemo } from 'solid-js'
 import Game from '../components/Game'
 import games from '../assets/books.json'
 import styles from '../assets/css/Games.module.css'
+import '../assets/css/Themes.module.css';
+
 
 const Games: Component = () => {
   const [search, setSearch] = createSignal('')

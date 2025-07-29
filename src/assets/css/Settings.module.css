@@ -1,28 +1,7 @@
-:root {
-    --background: #000000;
-    --home-bg: url("/src/assets/images/alora_bg.png");
-    --primary: #0a0a0a;
-    --primary-dark: #050505;
-    --secondary: #1a1a1a;
-    --accent: #6366f1;
-    --accent-light: #8b5cf6;
-    --accent-glow: rgba(99, 102, 241, 0.2);
-    --border: rgba(255, 255, 255, 0.1);
-    --text: #ffffff;
-    --text-muted: #a1a1aa;
-    --hover-danger: #ef4444;
-    --active-tab: linear-gradient(145deg, #1a1a1a, var(--secondary));
-    --glass: rgba(10, 10, 10, 0.8);
-    --glass-border: rgba(255, 255, 255, 0.05);
-    --success: #10b981;
-}
-
 body {
-  background: 
-    linear-gradient(
-      rgba(10, 10, 10, 0.85), 
-      rgba(10, 10, 10, 0.85)
-    ),
+  background:
+    linear-gradient(rgba(10, 10, 10, 0.85),
+      rgba(10, 10, 10, 0.85)),
     var(--home-bg);
   background-size: cover;
   background-position: center;
@@ -73,8 +52,8 @@ body {
   border-color: var(--border);
 }
 
-.tab.active{
-    background: var(--success);
+.tab.active {
+  background: var(--success);
 }
 
 
@@ -95,7 +74,7 @@ body {
   padding: 20px;
   border-radius: 12px;
   width: 500px;
-  height:275px;
+  height: 275px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -158,7 +137,7 @@ select:focus {
   padding: 10px 16px;
   border: none;
   border-radius: 8px;
-  width:105px;
+  width: 105px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -175,13 +154,14 @@ select:focus {
   height: 16px;
   color: var(--text);
 }
+
 .settingSectionColorInput {
-    width: 60%;
-    height: 40px;
-    border: 2px solid var(--border);
-    background: var(--primary-dark);
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 4px;
-    outline: none;
+  width: 60%;
+  height: 40px;
+  border: 2px solid var(--border);
+  background: var(--primary-dark);
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 4px;
+  outline: none;
 }
