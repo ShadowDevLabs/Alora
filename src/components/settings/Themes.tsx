@@ -2,7 +2,7 @@ import type { Component } from 'solid-js';
 import { createSignal } from 'solid-js';
 import Settings from '../../settings';
 import styles from '../../assets/css/Settings.module.css';
-
+import SettingsManager from '../../settings';
 const Themes: Component = () => {
     return (
         <div class={styles.generalContent}>
@@ -10,8 +10,8 @@ const Themes: Component = () => {
                 <div class={styles.settingSectionTitle}>PreMade Themes</div>
                 <div class={styles.settingSectionText}>Choose one of the premade themes below to change the appearance of Alora.</div>
                 <select class={styles.select}>
-                    <option>Dark (Default)</option>
-                    <option>Black / Blue</option>
+                    <option value="dark">Dark (Default)</option>
+                    <option value="spaceBlue">Space Blue</option>
                 </select>
             </div>
             <div class={styles.settingSection}>

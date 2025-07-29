@@ -7,20 +7,55 @@ type ChatType = {
   message: string;
 };
 
-const AiPage = () => {
+const Ai = () => {
   const [chats, setChats] = createSignal<ChatType[]>([
-    { from: 'assistant', message: 'Hello, how may I help you?' }
+    { from: 'assistant' as const, message: 'Hello, how may I help you?' }
   ]);
   const [input, setInput] = createSignal('');
+  const [loading, setLoading] = createSignal(false);
 
-  const submission = (e: KeyboardEvent) => {
+  const submission = async (e: KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       const message = input().trim();
-      if (message) {
-        setChats([...chats(), { from: 'user', message }]);
-        setInput('');
-        // reply code 
+      if (!message || loading()) return;
+
+      const updatedChats = [...chats(), { from: 'user' as const, message }];
+      setChats(updatedChats);
+      setInput('');
+      setLoading(true);
+
+      try {
+        const response = await fetch('/api/ask', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            messages: updatedChats.map(chat => ({
+              role: chat.from,
+              content: chat.message
+            })),
+            temperature: 0.7,
+            max_tokens: 512
+          }),
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+        const assistantMessage =
+          typeof data === 'string'
+            ? data
+            : data?.message || data?.choices?.[0]?.message?.content || 'Unexpected response';
+
+        setChats([...updatedChats, { from: 'assistant' as const, message: assistantMessage }]);
+      } catch {
+        setChats([
+          ...updatedChats,
+          { from: 'assistant' as const, message: 'Error: Failed to contact AI.' }
+        ]);
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -37,8 +72,9 @@ const AiPage = () => {
         <textarea
           class={styles.chatInput}
           value={input()}
-          placeholder="Ask AloraAI anything."
+          placeholder={loading() ? 'Waiting for response...' : 'Ask AloraAI anything.'}
           rows="1"
+          disabled={loading()}
           onInput={(e) => setInput(e.currentTarget.value)}
           onKeyDown={submission}
         />
@@ -47,4 +83,4 @@ const AiPage = () => {
   );
 };
 
-export default AiPage;
+export default Ai;

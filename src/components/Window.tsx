@@ -14,7 +14,7 @@ import Gamepad2 from 'lucide-solid/icons/gamepad-2';
 import Sparkles from 'lucide-solid/icons/sparkles';
 import AppWindow from 'lucide-solid/icons/app-window';
 import Maximize from 'lucide-solid/icons/maximize';
-
+import { doubleCsrf } from "csrf-csrf";
 import IFrame from './IFrame';
 import { parse, readable, icon } from '../proxy';
 
@@ -32,7 +32,7 @@ interface WindowProps {
 const Window: Component<WindowProps> = (props) => {
     const [pos, setPos] = createSignal({
         x: (window.innerWidth / 2 - 475) - props.panOffset.x,
-        y: (window.innerHeight / 2 - 300) - props.panOffset.y
+        y: (window.innerHeight / 2 - 475) - props.panOffset.y
     });
     const [size, setSize] = createSignal({ width: 950, height: 600 });
     const [isInteracting, setIsInteracting] = createSignal(false); // For drag/resize focus
@@ -168,7 +168,6 @@ const Window: Component<WindowProps> = (props) => {
             console.warn("Couldn't attach listener: " + err);
         }
     };
-
     async function search(url?: string) {
         const inputVal = url || (searchRef as HTMLInputElement).value;
         const parsed: string = await parse(inputVal);
@@ -256,9 +255,9 @@ const Window: Component<WindowProps> = (props) => {
                     <Show when={menu()}>
                         <div class={styles.menuPopup} onMouseDown={(e) => e.stopPropagation()} onClick={() => setMenu(false)}>
                             <div class={styles.menuItem}><Plus class={styles.menuItemIcon} /> New Tab</div>
-                            <div class={styles.menuItem}><Settings class={styles.menuItemIcon} /> Settings</div>
-                            <div class={styles.menuItem}><Gamepad2 class={styles.menuItemIcon} /> Games</div>
-                            <div class={styles.menuItem}><Sparkles class={styles.menuItemIcon} /> Ai</div>
+                            <div class={styles.menuItem} onclick={() => search("alora://settings")}><Settings class={styles.menuItemIcon} /> Settings</div>
+                            <div class={styles.menuItem} onclick={() => search("alora://books")} ><Gamepad2 class={styles.menuItemIcon} /> Games</div>
+                            <div class={styles.menuItem} onclick={() => search("alora://ai")} ><Sparkles class={styles.menuItemIcon} /> Ai</div>
                             <div class={styles.menuDivider}></div>
                             <div class={styles.menuItem}><AppWindow class={styles.menuItemIcon} /> Open Tab Abt:Blnk</div>
                             <div class={styles.menuItem}><AppWindow class={styles.menuItemIcon} /> Open Wnd Abt:Blnk</div>

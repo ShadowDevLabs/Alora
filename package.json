@@ -24,6 +24,7 @@
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.15.3",
     "@titaniumnetwork-dev/ultraviolet": "^3.2.10",
+    "csrf-csrf": "^4.0.3",
     "idb": "^8.0.3",
     "lucide-solid": "^0.525.0",
     "sirv": "^3.0.1",
