@@ -8,7 +8,7 @@ import Window from '../components/Window';
 import styles from '../assets/css/App.module.css';
 import { init as initProxy } from '../proxy';
 import '../assets/css/themes.css';
-
+import LiveShareMenu from '../components/liveshareMenu';
 // Initialize the proxy once
 window.addEventListener('transport', initProxy as EventListener);
 initProxy();
@@ -154,9 +154,9 @@ const Home: Component = () => {
     return (
       <div class={styles.dock}>
         <button class={styles.button} onClick={() => addWindow()}><Plus size='18' /></button>
+        <button class={styles.button} onClick={() => addWindow('alora://settings')}><SlidersHorizontal size='18' /></button>
         <button class={styles.button} onClick={share}><Share2 size='18' /></button>
         <button class={styles.button}><ZoomOut size='18' /></button>
-        <button class={styles.button} onClick={() => addWindow('alora://settings')}><SlidersHorizontal size='18' /></button>
       </div>
     );
   }
@@ -173,6 +173,7 @@ const Home: Component = () => {
       onMouseMove={handleMouseMove}
       onWheel={handleWheel}
     >
+      <LiveShareMenu />
       <Dock />
       <For each={windows()}>{(item) => (
         <Window

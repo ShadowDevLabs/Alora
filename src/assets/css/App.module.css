@@ -103,20 +103,20 @@
 
 /* 3rd dock button  */
 .dock button:nth-child(3):hover {
-  background: linear-gradient(145deg, var(--accent-light), var(--success));
+  background: linear-gradient(145deg, var(--accent), var(--accent-glow));
   box-shadow:
     0 8px 24px rgba(0, 0, 0, 0.4),
-    0 0 0 2px var(--accent-light),
+    0 0 0 2px var(--accent),
     0 0 20px var(--accent-glow);
 }
 
 
 /* 4th dock button  */
 .dock button:nth-child(4):hover {
-  background: linear-gradient(145deg, var(--accent-glow), var(--accent-light));
+  background: linear-gradient(145deg, var(--accent), var(--accent));
   box-shadow:
     0 8px 24px rgba(0, 0, 0, 0.4),
-    0 0 0 2px var(--accent-light),
+    0 0 0 2px var(--accent),
     0 0 20px var(--accent-glow);
 }
 
@@ -154,4 +154,230 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   border: 1px solid var(--border);
   transition: all 0.4s ease;
+}
+
+
+/* LIVE SHARE */
+.page {
+  width: 60vw;
+  height: 30vw;
+  display: none;
+  position: absolute;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border);
+  transition: all 0.4s ease;
+}
+
+/* LIVE SHARE */
+
+.panel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  padding: 2rem;
+  border-radius: 1.2rem;
+  width: 480px;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  background: var(--primary);
+  color: var(--text);
+  transform: scale(1.05);
+}
+
+.heading {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, var(--text), var(--accent-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.row {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rowBottom {
+  display: flex;
+  justify-content: center;
+  margin-top: -0.2rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.inputGroup label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.input {
+  padding: 0.8rem 1rem;
+  border-radius: 0.6rem;
+  background: var(--primary);
+  border: 1px solid var(--border);
+  color: var(--text);
+  flex: 1;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.input::placeholder {
+  color: var(--text-muted);
+}
+
+.joinButton, .leaveButton, .copyButton, .startButton {
+  flex: 1;
+  padding: 0.8rem 1.2rem;
+  border: none;
+  border-radius: 0.6rem;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.joinButton {
+  background: var(--success);
+  color: var(--text);
+}
+
+.joinButton:hover {
+  background: var(--accent-light);
+  transform: translateY(-1px);
+}
+
+.leaveButton {
+  background: var(--hover-danger);
+  color: var(--text);
+}
+
+.leaveButton:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.copyButton {
+  background: var(--accent);
+  color: var(--text);
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.copyButton:hover {
+  background: var(--accent-light);
+  transform: translateY(-1px);
+}
+
+.copyButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.copyButtonActive {
+  background: var(--success);
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.startButton {
+  background: var(--secondary);
+  color: var(--text);
+  padding: 0.8rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.startButton:hover {
+  background: var(--accent);
+  transform: translateY(-1px);
+}
+
+.joinButton:active, .leaveButton:active, .copyButton:active, .startButton:active {
+  transform: translateY(0);
+}
+
+.notification {
+  text-align: center;
+  color: var(--success);
+  font-size: 0.9rem;
+  font-weight: 500;
+  height: 1.2rem;
+  margin-top: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .panel {
+    width: 90vw;
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  .row {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  
+  .joinButton, .leaveButton, .copyButton {
+    width: 100%;
+  }
 }
