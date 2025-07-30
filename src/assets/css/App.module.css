@@ -360,8 +360,8 @@
   color: var(--success);
   font-size: 0.9rem;
   font-weight: 500;
-  height: 1.2rem;
-  margin-top: 0.5rem;
+  margin-top: -0.2rem;
+  height: 0.3rem;
   transition: all 0.3s ease;
 }
 
