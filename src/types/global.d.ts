@@ -24,9 +24,15 @@ interface Shortcut {
     url: string;
 }
 
+interface Cloak {
+    title: string | null;
+    icon: string | null;
+}
+
 interface Settings {
     searchEngine: string;
     theme: string;
     proxy: string;
     shortcuts: Shortcut[];
+    cloak: Cloak
 }

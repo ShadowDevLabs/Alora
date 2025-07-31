@@ -35,6 +35,7 @@
     "sirv": "^3.0.1",
     "solid-draggable": "^0.1.0",
     "solid-js": "^1.9.5",
+    "solid-meta": "^0.28.1",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.44.0",
     "vite-plugin-static-copy": "^3.1.1"
   }

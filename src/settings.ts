@@ -4,8 +4,14 @@ const DB_NAME = 'AloraSettingsDB';
 const STORE_NAME = 'settings';
 const DB_VERSION = 1;
 
+type SettingsUpdateMessage = {
+    type: 'setting_updated';
+    key: string;
+};
+
 export default class SettingsManager {
     private static dbPromise: Promise<IDBPDatabase> | null = null;
+    private static channel = new BroadcastChannel('settings_channel');
 
     private static getDb(): Promise<IDBPDatabase> {
         if (!this.dbPromise) {
@@ -32,6 +38,21 @@ export default class SettingsManager {
     static async set(key: string, value: any): Promise<void> {
         const db = await this.getDb();
         await db.put(STORE_NAME, value, key);
+        this.channel.postMessage({ type: 'setting_updated', key: key });
+    }
+
+    static onUpdate(callback: (key: string) => void): () => void {
+        const messageHandler = (event: MessageEvent<SettingsUpdateMessage>) => {
+            if (event.data && event.data.type === 'setting_updated') {
+                callback(event.data.key);
+            }
+        };
+
+        this.channel.addEventListener('message', messageHandler);
+
+        return () => {
+            this.channel.removeEventListener('message', messageHandler);
+        };
     }
 
     static applyTheme(): void {
@@ -65,6 +86,10 @@ export default class SettingsManager {
             { name: 'Discord', url: 'discord.com' },
             { name: 'GitHub', url: 'github.com' },
             { name: 'Twitter', url: 'twitter.com' },
-        ]
+        ],
+        cloak: {
+            title: null,
+            icon: null
+        }
     };
 }

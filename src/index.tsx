@@ -1,5 +1,8 @@
-/* @refresh reload */
+// index.tsx
+
 import { render } from 'solid-js/web';
+import { Router } from "@solidjs/router";
+import { MetaProvider } from 'solid-meta';
 
 import './index.css';
 import App from './App';
@@ -12,4 +15,13 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-render(() => <App />, root!);
+render(
+  () => (
+    <MetaProvider>
+      <Router>
+        <App />
+      </Router>
+    </MetaProvider>
+  ),
+  root!
+);
