@@ -28,14 +28,6 @@ const Themes: Component<ThemesProps> = (props) => {
             <option value="royalNight">Royal Night</option>
         </select>
       </div>
-      <div class={styles.settingSection}>
-        <div class={styles.settingSectionTitle}>Custom Theme Gen</div>
-        <div class={styles.settingSectionText}>
-          You can create your own custom theme revolving around a certain color. Just change
-          the color below!
-        </div>
-        <input type="color" class={styles.settingSectionColorInput} disabled />
-      </div>
     </div>
   );
 };
