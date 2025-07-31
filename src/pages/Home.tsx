@@ -75,18 +75,28 @@ const Home: Component = () => {
   };
 
   onMount(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === 'theme' && e.newValue && document.documentElement.className !== e.newValue) {
+        document.documentElement.className = e.newValue;
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    document.documentElement.className = localStorage.getItem('theme') ?? 'dark';
+
     loadAndApplyCloak();
     startSession();
 
-    const cleanup = Settings.onUpdate((key) => {
+    const cleanupSettings = Settings.onUpdate((key) => {
       console.log(`Received update for setting: '${key}'`);
-      if (key === 'cloak') {
-        loadAndApplyCloak();
-      }
+      if (key === 'cloak') loadAndApplyCloak();
     });
 
-    return cleanup;
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      cleanupSettings();
+    };
   });
+
 
   createEffect(() => {
     const currentCloak = cloak();

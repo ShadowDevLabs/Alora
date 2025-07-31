@@ -13,7 +13,7 @@ const PREMADE_CLOAKS = {
     'Gmail': { title: 'Inbox', icon: 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico' },
     'Youtube': { title: 'YouTube', icon: 'https://www.youtube.com/favicon.ico' },
     'Zoom': { title: 'Zoom', icon: 'https://st1.zoom.us/zoom.ico' },
-    'Googlemeets': { title: 'Google Meet', icon: 'https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/favicon.ico' }
+    'Google Meets': { title: 'Google Meet', icon: 'https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/favicon.ico' }
 };
 
 const General: Component = () => {
