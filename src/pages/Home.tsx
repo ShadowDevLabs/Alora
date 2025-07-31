@@ -1,4 +1,5 @@
-import { Component, For, createSignal, onMount } from 'solid-js';
+import type { Component } from 'solid-js';
+import { For, createSignal, onMount, Show } from 'solid-js';
 import { useParams, useNavigate } from "@solidjs/router";
 import SlidersHorizontal from 'lucide-solid/icons/sliders-horizontal';
 import Share2 from 'lucide-solid/icons/share-2';
@@ -8,13 +9,11 @@ import Window from '../components/Window';
 import styles from '../assets/css/App.module.css';
 import { init as initProxy } from '../proxy';
 import '../assets/css/themes.css';
-import LiveShareMenu from '../components/liveshareMenu';
-// Initialize the proxy once
+import LiveShareMenu from '../components/LiveshareMenu';
 window.addEventListener('transport', initProxy as EventListener);
 initProxy();
 
 const Home: Component = () => {
-  // Themes
   onMount(() => {
     const onStorage = (e: StorageEvent) => e.key === 'theme' && e.newValue && (document.documentElement.className !== e.newValue) && (document.documentElement.className = e.newValue);
     window.addEventListener('storage', onStorage);
@@ -22,21 +21,19 @@ const Home: Component = () => {
     return () => window.removeEventListener('storage', onStorage);
   });
 
-  // --- Component State ---
   const params = useParams();
   const navigate = useNavigate();
   let ws: WebSocket;
   let appRef: HTMLDivElement | undefined;
 
-  // Window and UI state now live inside the component
+  const [liveShareOpen, setLiveShareOpen] = createSignal(false);
   const [windows, setWindows] = createSignal<{ id: string, url: string, isClosing?: boolean }[]>([]);
   const [stackingOrder, setStackingOrder] = createSignal<string[]>([]);
   const [panOffset, setPanOffset] = createSignal({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = createSignal(false);
   const [lastPos, setLastPos] = createSignal({ x: 0, y: 0 });
 
-  // --- WebSocket and Session Management ---
-  onMount(() => {
+  const startSession = (() => {
     const sessionId = params.sessionId || crypto.randomUUID();
     if (!params.sessionId) {
       navigate(`/${sessionId}`, { replace: true });
@@ -48,13 +45,11 @@ const Home: Component = () => {
     ws.onopen = () => {
       console.log('WebSocket connected. Joining session:', sessionId);
       ws.send(JSON.stringify({ session: sessionId, data: { type: 'join' } }));
-      // Add the first window if the session is new
       if (windows().length === 0) {
-        addWindow('alora://new', true); // Don't broadcast the very first one
+        addWindow('alora://new', true);
       }
     };
 
-    // Listen for global actions from other clients
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
       switch (message.type) {
@@ -73,14 +68,12 @@ const Home: Component = () => {
     ws.onerror = (err) => console.error('WebSocket error:', err);
   });
 
-  // Helper to send updates to other clients
   const sendGlobalUpdate = (type: string, data: object) => {
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ session: params.sessionId, data: { type, ...data } }));
     }
   };
 
-  // --- Window Management Functions ---
   const addWindow = (url: string = 'alora://new', fromRemote: boolean = false) => {
     const newWindow = { id: crypto.randomUUID(), url: url, isClosing: false };
     setWindows(prev => [...prev, newWindow]);
@@ -114,7 +107,6 @@ const Home: Component = () => {
     }
   };
 
-  // --- UI Handlers ---
   const handleMouseDown = (e: MouseEvent) => {
     if (e.target !== appRef) return;
     setIsPanning(true);
@@ -143,14 +135,16 @@ const Home: Component = () => {
     }));
   };
 
-  // --- Dock Component ---
-  // Defined inside Home to have access to its functions
   function Dock() {
     const share = () => {
-      const shareUrl = window.location.href;
-      navigator.clipboard.writeText(shareUrl);
-      alert(`Share link copied to clipboard: ${shareUrl}`);
+      setLiveShareOpen(!liveShareOpen);
+      const sessionId = params.sessionId || crypto.randomUUID();
+      if (!params.sessionId) {
+        navigate(`/${sessionId}`, { replace: true });
+      }
+      ws.send(JSON.stringify({ session: sessionId, data: { type: 'share' } }));
     };
+
     return (
       <div class={styles.dock}>
         <button class={styles.button} onClick={() => addWindow()}><Plus size='18' /></button>
@@ -161,7 +155,6 @@ const Home: Component = () => {
     );
   }
 
-  // --- Render ---
   return (
     <div
       ref={appRef}
@@ -169,11 +162,14 @@ const Home: Component = () => {
       style={{ 'background-position': `${panOffset().x}px ${panOffset().y}px` }}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp} // Use mouseup to also stop panning when leaving
+      onMouseLeave={handleMouseUp}
       onMouseMove={handleMouseMove}
       onWheel={handleWheel}
     >
-      <LiveShareMenu />
+      <Show when={liveShareOpen()}>
+        <LiveShareMenu open={() => setLiveShareOpen(true)} sessionId='' close={() => setLiveShareOpen(false)} />
+
+      </Show>
       <Dock />
       <For each={windows()}>{(item) => (
         <Window
@@ -184,7 +180,7 @@ const Home: Component = () => {
           onClose={closeWindow}
           isClosing={item.isClosing}
           panOffset={panOffset()}
-          ws={ws} // Pass the single WebSocket instance to each window
+          ws={ws}
         />
       )}</For>
     </div>

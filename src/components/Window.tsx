@@ -13,12 +13,10 @@ import ArrowRight from 'lucide-solid/icons/arrow-right';
 import Settings from 'lucide-solid/icons/settings';
 import Gamepad2 from 'lucide-solid/icons/gamepad-2';
 import Sparkles from 'lucide-solid/icons/sparkles';
-import AppWindow from 'lucide-solid/icons/app-window';
 import Maximize from 'lucide-solid/icons/maximize';
 import IFrame from './IFrame';
 import { parse, readable, icon } from '../proxy';
 
-// --- Updated Props Interface ---
 interface WindowProps {
     id: string;
     startUrl: string;
@@ -32,8 +30,7 @@ interface WindowProps {
 }
 
 const Window: Component<WindowProps> = (props) => {
-    // --- State and Refs ---
-    const params = useParams(); // Get session ID from URL
+    const params = useParams();
     const [pos, setPos] = createSignal({
         x: (window.innerWidth / 2 - 475) - props.panOffset.x,
         y: (window.innerHeight / 2 - 475) - props.panOffset.y
@@ -49,30 +46,23 @@ const Window: Component<WindowProps> = (props) => {
     let fsRef: HTMLDivElement | undefined;
     let searchRef: HTMLInputElement | undefined;
     let iframeRef: HTMLIFrameElement | undefined;
-
-    // --- WebSocket Helper Function ---
-    // Standardizes sending messages for the live share session
     const sendUpdate = (type: string, data: object) => {
         if (props.ws && props.ws.readyState === WebSocket.OPEN) {
             props.ws.send(JSON.stringify({
-                session: params.sessionId, // Include session ID
+                session: params.sessionId,
                 data: { type, id: props.id, ...data }
             }));
         }
     };
 
-    // --- Effects ---
     onMount(() => {
-        // Initial navigation doesn't need to be sent, as the window is new
         search(props.startUrl, true);
     });
 
-    // Main effect for handling incoming WebSocket messages
     createEffect(() => {
         const handleWsMessage = (event: MessageEvent) => {
             try {
                 const message = JSON.parse(event.data);
-                // Only act on messages for this specific window instance
                 if (message.id !== props.id) return;
 
                 switch (message.type) {
@@ -102,7 +92,6 @@ const Window: Component<WindowProps> = (props) => {
         }
     });
 
-    // Effect for handling navigation messages from within the iframe
     createEffect(() => {
         const handleMessage = (event: MessageEvent) => {
             if (event.source !== iframeRef?.contentWindow || !event.data || event.data.type !== 'navigation') {
@@ -113,21 +102,18 @@ const Window: Component<WindowProps> = (props) => {
             setHref(newUrl);
             setTitle(newTitle);
             if (searchRef) searchRef.value = newUrl;
-            // Send navigation update to other clients
             sendUpdate('navigate', { href: newUrl, src: event.data.url, title: newTitle });
         };
         window.addEventListener('message', handleMessage);
         onCleanup(() => window.removeEventListener('message', handleMessage));
     });
 
-    // Effect for handling browser fullscreen change
     createEffect(() => {
         const onFullscreenChange = () => setFs(document.fullscreenElement != null);
         document.addEventListener('fullscreenchange', onFullscreenChange);
         onCleanup(() => document.removeEventListener('fullscreenchange', onFullscreenChange));
     });
 
-    // --- Functions ---
     async function search(url?: string, isInitial = false) {
         const inputVal = url || searchRef?.value || 'alora://new';
         const parsedSrc = await parse(inputVal);
@@ -138,7 +124,6 @@ const Window: Component<WindowProps> = (props) => {
         setTitle('Loading...');
         if (searchRef) searchRef.value = readableHref;
 
-        // Only send update if it's not the initial load of the window
         if (!isInitial) {
             sendUpdate('navigate', { href: readableHref, src: parsedSrc, title: 'Loading...' });
         }
@@ -242,7 +227,6 @@ const Window: Component<WindowProps> = (props) => {
         else document.exitFullscreen();
     };
 
-    // --- Render ---
     return (
         <div
             ref={fsRef}
