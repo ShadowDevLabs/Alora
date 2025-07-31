@@ -38,7 +38,7 @@
 
 :root.spaceBlue {
   --background: rgba(2, 7, 27, 0.259);
-  --home-bg: url("https://media.gettyimages.com/id/450145381/video/dark-background.jpg?s=640x640&k=20&c=I47pM02fVxP2pvvWPc9N-Va3CI3aJEsteUysaVHvv5I=");
+  --home-bg: url("/src/assets/images/alora_spaceBlue.png"); 
   --primary: #0a0f20;
   --primary-dark: #040815;
   --secondary: #121c30;
@@ -73,4 +73,23 @@
   --glass: rgba(10, 10, 10, 0.8);
   --glass-border: rgba(255, 0, 80, 0.05);
   --success: #ff4f87; 
+}
+
+:root.royalNight {
+  --background: rgba(0,0,0,0.25);
+  --home-bg: url("/src/assets/images/alora_royalNight.jpeg"); 
+  --primary: #1a1029;
+  --primary-dark: #12091e;
+  --secondary: #2a1c3c;
+  --accent: #a855f7;
+  --accent-light: #c084fc;
+  --accent-glow: rgba(168, 85, 247, 0.2);
+  --border: rgba(255, 255, 255, 0.08);
+  --text: #f4f0ff;
+  --text-muted: #b39ddb;
+  --hover-danger: #e11d48;
+  --active-tab: linear-gradient(145deg, #2a1c3c, #1a1029);
+  --glass: rgba(26, 16, 41, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.04);
+  --success: #b983ff;
 }

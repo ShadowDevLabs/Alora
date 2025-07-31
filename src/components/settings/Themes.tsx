@@ -23,8 +23,9 @@ const Themes: Component<ThemesProps> = (props) => {
         </div>
         <select class={styles.select} onChange={onThemeChange} value={props.theme}>
           <option value="dark">Dark (Default)</option>
-          <option value="spaceBlue">Space Blue</option>
            <option value="operaGX">Opera GX</option>
+            <option value="spaceBlue">Space Blue</option>
+            <option value="royalNight">Royal Night</option>
         </select>
       </div>
       <div class={styles.settingSection}>
