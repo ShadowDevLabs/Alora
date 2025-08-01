@@ -16,7 +16,6 @@ const devProxyAssets = () => ({
     server.middlewares.use('/bare-mux/', sirv(baremuxPath, { dev: true }));
     server.middlewares.use('/uv/', sirv(uvPath, { dev: true }));
     server.middlewares.use('/epoxy/', sirv(epoxyPath, { dev: true }));
-    server.middlewares.use('/scram/', sirv(scramjetPath, { dev: true }));
     server.middlewares.use('/api/ask', async (req, res, next) => {
       if (req.method !== 'POST') {
         return next();

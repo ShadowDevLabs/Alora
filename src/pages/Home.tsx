@@ -20,6 +20,7 @@ const Home: Component = () => {
   const navigate = useNavigate();
   let ws: WebSocket;
   let appRef: HTMLDivElement | undefined;
+  let liveShareRef: typeof LiveShareMenu | undefined
 
   const [liveShareOpen, setLiveShareOpen] = createSignal(false);
   const [windows, setWindows] = createSignal<{ id: string, url: string, isClosing?: boolean }[]>([]);
@@ -27,6 +28,7 @@ const Home: Component = () => {
   const [panOffset, setPanOffset] = createSignal({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = createSignal(false);
   const [lastPos, setLastPos] = createSignal({ x: 0, y: 0 });
+  const [sessionId, setSessionId] = createSignal(params.sessionId);
 
   const [cloak, setCloak] = createSignal({
     title: 'Alora',
@@ -35,15 +37,15 @@ const Home: Component = () => {
 
   const loadAndApplyCloak = async () => {
     const cloakSettings = await Settings.get("cloak");
-    console.log("1. Fetched settings from DB:", cloakSettings);
     setCloak({
       title: cloakSettings?.title || 'Alora',
       icon: cloakSettings?.icon || '/icons/favicon.ico'
     });
   };
 
-  const startSession = () => {
-    const sessionId = params.sessionId || crypto.randomUUID();
+
+  const startSession = (id?: string) => {
+    setSessionId(id || params.sessionId || crypto.randomUUID());
     if (!params.sessionId) {
       navigate(`/${sessionId}`, { replace: true });
     }
@@ -52,9 +54,6 @@ const Home: Component = () => {
     ws.onopen = () => {
       console.log('WebSocket connected');
       ws.send(JSON.stringify({ session: sessionId, data: { type: 'join' } }));
-      if (windows().length === 0) {
-        addWindow('alora://new', true);
-      }
     };
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
@@ -72,7 +71,15 @@ const Home: Component = () => {
     };
     ws.onclose = () => console.log('WebSocket disconnected');
     ws.onerror = (err) => console.error('WebSocket error:', err);
+    return sessionId();
   };
+
+  if (params.sessionId) startSession();
+
+  const endSession = () => {
+    navigate('/', { replace: true });
+    ws?.close();
+  }
 
   onMount(() => {
     const onStorage = (e: StorageEvent) => {
@@ -84,10 +91,11 @@ const Home: Component = () => {
     document.documentElement.className = localStorage.getItem('theme') ?? 'dark';
 
     loadAndApplyCloak();
-    startSession();
+    if (windows().length === 0) {
+      addWindow('alora://new', true);
+    }
 
     const cleanupSettings = Settings.onUpdate((key) => {
-      console.log(`Received update for setting: '${key}'`);
       if (key === 'cloak') loadAndApplyCloak();
     });
 
@@ -100,20 +108,15 @@ const Home: Component = () => {
 
   createEffect(() => {
     const currentCloak = cloak();
-    console.log('3. Running effect to update document head...');
-
     document.title = currentCloak.title;
-    console.log(`   - Set document.title to: "${document.title}"`);
 
     let link = document.querySelector<HTMLLinkElement>("link[rel~='icon']");
     if (!link) {
       link = document.createElement('link');
       link.rel = 'icon';
       document.head.appendChild(link);
-      console.log('   - Created new <link> for favicon.');
     }
     link.href = currentCloak.icon;
-    console.log(`   - Set favicon href to: "${link.href}"`);
   });
 
   const sendGlobalUpdate = (type: string, data: object) => {
@@ -181,19 +184,11 @@ const Home: Component = () => {
   };
 
   function Dock() {
-    const share = () => {
-      setLiveShareOpen(!liveShareOpen);
-      const sessionId = params.sessionId || crypto.randomUUID();
-      if (!params.sessionId) {
-        navigate(`/${sessionId}`, { replace: true });
-      }
-      ws.send(JSON.stringify({ session: sessionId, data: { type: 'share' } }));
-    };
     return (
       <div class={styles.dock}>
         <button class={styles.button} onClick={() => addWindow()}><Plus size='18' /></button>
         <button class={styles.button} onClick={() => addWindow('alora://settings')}><SlidersHorizontal size='18' /></button>
-        <button class={styles.button} onClick={share}><Share2 size='18' /></button>
+        <button class={styles.button} onClick={() => setLiveShareOpen(!liveShareOpen())}><Share2 size='18' /></button>
         <button class={styles.button}><ZoomOut size='18' /></button>
       </div>
     );
@@ -202,13 +197,13 @@ const Home: Component = () => {
   return (
     <>
       <div ref={appRef} class={styles.App} style={{ 'background-position': `${panOffset().x}px ${panOffset().y}px` }} onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp} onMouseMove={handleMouseMove} onWheel={handleWheel}>
-        <Show when={liveShareOpen()}>
-          <LiveShareMenu open={() => setLiveShareOpen(true)} sessionId='' close={() => setLiveShareOpen(false)} />
-        </Show>
         <Dock />
         <For each={windows()}>{(item) => (
           <Window id={item.id} startUrl={item.url} zIndex={stackingOrder().indexOf(item.id)} onFocus={bringToFront} onClose={closeWindow} isClosing={item.isClosing} panOffset={panOffset()} ws={ws} />
         )}</For>
+        <Show when={liveShareOpen()}>
+          <LiveShareMenu sessionId={sessionId()} open={() => setLiveShareOpen(true)} close={() => setLiveShareOpen(false)} openSession={startSession} closeSession={endSession} />
+        </Show>
       </div>
     </>
   );

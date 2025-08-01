@@ -155,6 +155,7 @@ const Window: Component<WindowProps> = (props) => {
         };
 
         const onDragEnd = () => {
+            // Re-enable text selection
             document.body.style.userSelect = '';
             shield.remove();
             shield.removeEventListener('mousemove', doDrag);
@@ -176,6 +177,7 @@ const Window: Component<WindowProps> = (props) => {
         const startMouse = { x: e.clientX, y: e.clientY };
         const minWidth = 440, minHeight = 220;
 
+        // Prevent text selection during resize
         document.body.style.userSelect = 'none';
 
         const shield = document.createElement('div');
@@ -212,6 +214,7 @@ const Window: Component<WindowProps> = (props) => {
         };
 
         const onResizeEnd = () => {
+            // Re-enable text selection
             document.body.style.userSelect = '';
             shield.remove();
             shield.removeEventListener('mousemove', doResize);

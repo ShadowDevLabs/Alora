@@ -7,20 +7,35 @@ import Check from 'lucide-solid/icons/check';
 import Loader from 'lucide-solid/icons/loader-2';
 
 interface LiveshareProps {
-  sessionId: string;
+  sessionId?: string;
   close: () => void;
   open: () => void;
+  openSession: (id?: string) => string;
+  closeSession: () => void;
 }
 
-const LiveShareMenu: Component<LiveshareProps> = (props: LiveshareProps) => {
-  const [sessionLink, setSessionLink] = createSignal(`${location.href}${props.sessionId}`);
+const LiveShareMenu: Component<LiveshareProps> = (props) => {
+  const [sessionLink, setSessionLink] = createSignal(props.sessionId ? `${location.href}${props.sessionId}` : "No active session");
   const [notification, setNotification] = createSignal('');
   const [copyState, setCopyState] = createSignal('idle');
 
-  const copyToClipboard = async () => {
-    setCopyState('loading');
-    await new Promise(resolve => setTimeout(resolve, 800));
+  let codeRef: HTMLInputElement | undefined;
 
+  function endSession() {
+    props.closeSession();
+    setSessionLink('No active session');
+    codeRef!.value = '';
+  }
+
+  function startSession(id?: string) {
+    id = props.openSession(id || undefined);
+    setSessionLink(`${location.origin}/${id}`);
+    codeRef!.value = id;
+  }
+
+  const copyToClipboard = async () => {
+    startSession();
+    setCopyState('loading');
     await navigator.clipboard.writeText(sessionLink());
     setCopyState('success');
     setNotification('Copied to clipboard!');
@@ -46,13 +61,13 @@ const LiveShareMenu: Component<LiveshareProps> = (props: LiveshareProps) => {
       <div class={styles.row}>
         <div class={styles.inputGroup}>
           <label for="join">Join Code</label>
-          <input id="join" class={styles.input} placeholder="Enter session code..." />
+          <input ref={codeRef} id="join" class={styles.input} placeholder="Enter session code..." />
         </div>
       </div>
 
       <div class={styles.row}>
-        <button class={styles.joinButton}>Join</button>
-        <button class={styles.leaveButton}>Leave</button>
+        <button class={styles.joinButton} onclick={() => startSession(codeRef!.value)}>Join</button>
+        <button class={styles.leaveButton} onclick={() => endSession()}>Leave</button>
       </div>
 
       <div class={styles.row}>
@@ -64,7 +79,7 @@ const LiveShareMenu: Component<LiveshareProps> = (props: LiveshareProps) => {
           {copyState() === 'idle' && (
             <>
               <Copy size={16} />
-              Copy Session Link
+              Start Session
             </>
           )}
           {copyState() === 'loading' && (
@@ -80,10 +95,6 @@ const LiveShareMenu: Component<LiveshareProps> = (props: LiveshareProps) => {
             </>
           )}
         </button>
-      </div>
-
-      <div class={styles.rowBottom}>
-        <button class={styles.startButton}>Start Session</button>
       </div>
 
       <div class={styles.notification}>{notification()}</div>

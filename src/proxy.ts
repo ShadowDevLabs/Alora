@@ -2,17 +2,47 @@ import { BareMuxConnection } from "@mercuryworkshop/bare-mux";
 import Settings from "./settings";
 
 const conn = new BareMuxConnection("/bare-mux/worker.js");
-const proxy = await Settings.get("proxy")
+let proxy = await Settings.get("proxy")
+
+Settings.onUpdate(async (e) => {
+    if (e === 'proxy') proxy = await Settings.get("proxy")
+})
+
 const transports = {
     epoxy: "/epoxy/index.mjs",
     libcurl: "/libcurl/index.mjs"
 }
+let sj;
 
 async function init(e?: TransportEvent) {
+    await initScramjet();
     if (!e) navigator.serviceWorker.register('/sw.js');
     console.log("[INIT] Setting transport...");
     await setTransport();
     console.log("[DEBUG] SJ at:");
+}
+
+async function initScramjet() {
+    //@ts-ignore
+    const { ScramjetController } = $scramjetLoadController();
+    sj = new ScramjetController({
+        prefix: "/service/scram/",
+        files: {
+            wasm: "/scram/scramjet.wasm.wasm",
+            all: "/scram/scramjet.all.js",
+            sync: "/scam/scramjet.sync.js"
+        },
+        codec: {
+            encode: (url: string) => {
+                return __uv$config.encodeUrl(url);
+            },
+            decode: (url: string) => {
+                return __uv$config.decodeUrl(url);
+            }
+        }
+    });
+
+    sj.init();
 }
 
 async function setTransport(server?: string | undefined, transport?: string) {
@@ -34,10 +64,10 @@ async function parse(input: string): Promise<string> {
         const hostname = new URL(inWProto).hostname;
         if (!hostname.includes(".") || /[^a-z0-9.-]/i.test(hostname)) throw new Error("No TLD or invalid characters");
 
-        return (proxy === "uv") ? __uv$config.prefix + __uv$config.encodeUrl(inWProto) : __uv$config.prefix + __uv$config.encodeUrl(inWProto);
+        return (proxy === "uv") ? __uv$config.prefix + __uv$config.encodeUrl(inWProto) : "/service/scram/" + __uv$config.encodeUrl(inWProto);
     } catch {
         const searchUrl = searchEngine.replace("{query}", encodeURIComponent(input));
-        return __uv$config.prefix + __uv$config.encodeUrl(searchUrl);
+        return (proxy === "uv" ? __uv$config.prefix : "/service/scram/") + __uv$config.encodeUrl(searchUrl);
     }
 }
 
@@ -47,6 +77,9 @@ function readable(input: string): string {
     console.log(input);
     if (input.startsWith(__uv$config.prefix)) {
         return __uv$config.decodeUrl(input.replace(__uv$config.prefix, ""));
+    } else if (input.startsWith("/service/scram")) {
+        console.log(input.replace("/service/scram/", ""))
+        return __uv$config.decodeUrl(input.replace("/service/scram/", ""));
     } else {
         return "alora:/" + input;
     }
