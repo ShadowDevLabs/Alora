@@ -47,7 +47,7 @@ const Home: Component = () => {
   const startSession = (id?: string) => {
     setSessionId(id || params.sessionId || crypto.randomUUID());
     if (!params.sessionId) {
-      navigate(`/${sessionId}`, { replace: true });
+      navigate(`/${sessionId()}`, { replace: true });
     }
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     ws = new WebSocket(`${protocol}//${window.location.host}/ws`);

@@ -28,7 +28,7 @@ const LiveShareMenu: Component<LiveshareProps> = (props) => {
   }
 
   function startSession(id?: string) {
-    id = props.openSession(id || undefined);
+    id = props.openSession(id?.replace(location.href, "") || undefined);
     setSessionLink(`${location.origin}/${id}`);
     codeRef!.value = id;
   }
