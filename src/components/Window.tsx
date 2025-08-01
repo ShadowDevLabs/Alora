@@ -1,7 +1,7 @@
 import type { Component } from 'solid-js';
 import styles from '../assets/css/Window.module.css';
 import { createSignal, createEffect, onCleanup, onMount, Show } from 'solid-js';
-import { useParams } from "@solidjs/router"; // Import useParams
+import { useParams } from "@solidjs/router";
 import Handle from 'lucide-solid/icons/ellipsis';
 import Menu from 'lucide-solid/icons/logs';
 import Reload from 'lucide-solid/icons/rotate-cw';
@@ -36,7 +36,6 @@ const Window: Component<WindowProps> = (props) => {
         y: (window.innerHeight / 2 - 475) - props.panOffset.y
     });
     const [size, setSize] = createSignal({ width: 950, height: 600 });
-    const [isInteracting, setIsInteracting] = createSignal(false);
     const [fs, setFs] = createSignal(false);
     const [menu, setMenu] = createSignal(false);
     const [href, setHref] = createSignal<string>(props.startUrl);
@@ -46,6 +45,7 @@ const Window: Component<WindowProps> = (props) => {
     let fsRef: HTMLDivElement | undefined;
     let searchRef: HTMLInputElement | undefined;
     let iframeRef: HTMLIFrameElement | undefined;
+
     const sendUpdate = (type: string, data: object) => {
         if (props.ws && props.ws.readyState === WebSocket.OPEN) {
             props.ws.send(JSON.stringify({
@@ -131,33 +131,44 @@ const Window: Component<WindowProps> = (props) => {
 
     const handleMouseDown = (e: MouseEvent) => {
         if (e.button !== 0 || fs()) return;
-        setIsInteracting(true);
         props.onFocus(props.id);
         const startPos = pos();
         const startMouse = { x: e.clientX, y: e.clientY };
 
+        document.body.style.userSelect = 'none';
+
+        const shield = document.createElement('div');
+        shield.style.position = 'fixed';
+        shield.style.inset = '0';
+        shield.style.zIndex = '99999';
+        shield.style.cursor = 'grabbing';
+        document.body.appendChild(shield);
+
         const doDrag = (moveEvent: MouseEvent) => {
+            if (moveEvent.buttons !== 1) {
+                onDragEnd();
+                return;
+            }
             const dx = moveEvent.clientX - startMouse.x;
             const dy = moveEvent.clientY - startMouse.y;
             setPos({ x: startPos.x + dx, y: startPos.y + dy });
         };
 
         const onDragEnd = () => {
-            document.removeEventListener('mousemove', doDrag);
-            document.removeEventListener('mouseup', onDragEnd);
-            setIsInteracting(false);
-            // Send final position to server
+            document.body.style.userSelect = '';
+            shield.remove();
+            shield.removeEventListener('mousemove', doDrag);
+            shield.removeEventListener('mouseup', onDragEnd);
             sendUpdate('move', { pos: pos() });
         };
 
-        document.addEventListener('mousemove', doDrag);
-        document.addEventListener('mouseup', onDragEnd);
+        shield.addEventListener('mousemove', doDrag);
+        shield.addEventListener('mouseup', onDragEnd, { once: true });
     };
 
     const handleResizeMouseDown = (e: MouseEvent, direction: string) => {
         e.preventDefault();
         e.stopPropagation();
-        setIsInteracting(true);
         props.onFocus(props.id);
 
         const startSize = size();
@@ -165,7 +176,20 @@ const Window: Component<WindowProps> = (props) => {
         const startMouse = { x: e.clientX, y: e.clientY };
         const minWidth = 440, minHeight = 220;
 
+        document.body.style.userSelect = 'none';
+
+        const shield = document.createElement('div');
+        shield.style.position = 'fixed';
+        shield.style.inset = '0';
+        shield.style.zIndex = '99999';
+        shield.style.cursor = window.getComputedStyle(e.target as Element).cursor;
+        document.body.appendChild(shield);
+
         const doResize = (moveEvent: MouseEvent) => {
+            if (moveEvent.buttons !== 1) {
+                onResizeEnd();
+                return;
+            }
             const dx = moveEvent.clientX - startMouse.x;
             const dy = moveEvent.clientY - startMouse.y;
             let newPos = { ...pos() };
@@ -188,16 +212,16 @@ const Window: Component<WindowProps> = (props) => {
         };
 
         const onResizeEnd = () => {
-            document.removeEventListener('mousemove', doResize);
-            document.removeEventListener('mouseup', onResizeEnd);
-            setIsInteracting(false);
-            // Send final size and position to server
+            document.body.style.userSelect = '';
+            shield.remove();
+            shield.removeEventListener('mousemove', doResize);
+            shield.removeEventListener('mouseup', onResizeEnd);
             sendUpdate('resize', { size: size() });
             sendUpdate('move', { pos: pos() });
         };
 
-        document.addEventListener('mousemove', doResize);
-        document.addEventListener('mouseup', onResizeEnd);
+        shield.addEventListener('mousemove', doResize);
+        shield.addEventListener('mouseup', onResizeEnd, { once: true });
     };
 
     const handleIframeLoad = () => {
@@ -207,7 +231,6 @@ const Window: Component<WindowProps> = (props) => {
             iframeDoc.body.addEventListener('mousedown', () => props.onFocus(props.id));
             if (title() === 'Loading...') {
                 setTitle(iframeDoc.title || 'New Tab');
-                // Optional: send final title to others if it wasn't available before
                 sendUpdate('navigate', { title: iframeDoc.title || 'New Tab' });
             }
         } catch (err) {
@@ -295,7 +318,7 @@ const Window: Component<WindowProps> = (props) => {
             </div>
             <IFrame
                 ref={(el) => (iframeRef = el)}
-                class={`${styles.tabContent} ${isInteracting() ? styles.pointerEventsNone : ''}`}
+                class={styles.tabContent}
                 src={src()}
                 onLoad={handleIframeLoad}
             />

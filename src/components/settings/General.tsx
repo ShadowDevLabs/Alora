@@ -17,38 +17,37 @@ const PREMADE_CLOAKS = {
 };
 
 function abtblank(win: Window = window) {
-  const url = win.location.href;
-  const width = win.innerWidth;
-  const height = win.innerHeight;
+    const url = win.location.href;
+    const width = win.innerWidth;
+    const height = win.innerHeight;
 
-  const popup = win.open("about:blank", "", `width=${width},height=${height}`);
+    const popup = win.open("about:blank", "", `width=${width},height=${height}`);
 
-  if (!popup || popup.closed) {
-    alert("Allow popups and redirects to hide this from showing up in your history.");
-    return;
-  }
+    if (!popup || popup.closed) {
+        alert("Allow popups and redirects to hide this from showing up in your history.");
+        return;
+    }
 
-  const doc = popup.document;
-  doc.open();
-  doc.write('<!DOCTYPE html><html><head><title>Alora Abt:Blank</title></head><body></body></html>');
-  doc.close();
+    const doc = popup.document;
+    doc.open();
+    doc.write('<!DOCTYPE html><html><head><title>Alora Abt:Blank</title></head><body></body></html>');
+    doc.close();
 
-  const iframe = doc.createElement("iframe");
-  const style = iframe.style;
-  iframe.src = url;
+    const iframe = doc.createElement("iframe");
+    const style = iframe.style;
+    iframe.src = url;
 
-  style.position = "fixed";
-  style.top = style.bottom = style.left = style.right = "0";
-  style.border = style.outline = "none";
-  style.width = style.height = "100%";
+    style.position = "fixed";
+    style.top = style.bottom = style.left = style.right = "0";
+    style.border = style.outline = "none";
+    style.width = style.height = "100%";
 
-  doc.body.appendChild(iframe);
+    doc.body.appendChild(iframe);
 
-  win.location.replace("https://google.com");
+    win.location.replace("https://google.com");
 }
 
 const General: Component = () => {
-    // Use a single store for all settings
     const [settings, setSettings] = createStore<{ cloak: Cloak }>({
         cloak: { title: '', icon: '' },
     });
@@ -86,7 +85,7 @@ const General: Component = () => {
 
         if (selectedCloak) {
             setSettings('cloak', selectedCloak);
-            saveSettingNow('cloak'); // Save immediately
+            saveSettingNow('cloak');
         }
     };
 

@@ -1,44 +1,44 @@
 :root {
-    --background: #000000;
-    --home-bg: url("/src/assets/images/alora_dark.png");
-    --primary: #0a0a0a;
-    --primary-dark: #050505;
-    --secondary: #1a1a1a;
-    --accent: #6366f1;
-    --accent-light: #8b5cf6;
-    --accent-glow: rgba(99, 102, 241, 0.2);
-    --border: rgba(255, 255, 255, 0.1);
-    --text: #ffffff;
-    --text-muted: #a1a1aa;
-    --hover-danger: #ef4444;
-    --active-tab: linear-gradient(145deg, #1a1a1a, var(--secondary));
-    --glass: rgba(10, 10, 10, 0.8);
-    --glass-border: rgba(255, 255, 255, 0.05);
-    --success: #10b981;
+  --background: #000000;
+  --home-bg: url("/src/assets/images/alora_dark.png");
+  --primary: #0a0a0a;
+  --primary-dark: #050505;
+  --secondary: #1a1a1a;
+  --accent: #6366f1;
+  --accent-light: #8b5cf6;
+  --accent-glow: rgba(99, 102, 241, 0.2);
+  --border: rgba(255, 255, 255, 0.1);
+  --text: #ffffff;
+  --text-muted: #a1a1aa;
+  --hover-danger: #ef4444;
+  --active-tab: linear-gradient(145deg, #1a1a1a, var(--secondary));
+  --glass: rgba(10, 10, 10, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --success: #10b981;
 }
 
 :root.dark {
-    --background: #000000;
-    --home-bg: url("/src/assets/images/alora_dark.png");
-    --primary: #0a0a0a;
-    --primary-dark: #050505;
-    --secondary: #1a1a1a;
-    --accent: #6366f1;
-    --accent-light: #8b5cf6;
-    --accent-glow: rgba(99, 102, 241, 0.2);
-    --border: rgba(255, 255, 255, 0.1);
-    --text: #ffffff;
-    --text-muted: #a1a1aa;
-    --hover-danger: #ef4444;
-    --active-tab: linear-gradient(145deg, #1a1a1a, var(--secondary));
-    --glass: rgba(10, 10, 10, 0.8);
-    --glass-border: rgba(255, 255, 255, 0.05);
-    --success: #10b981;
+  --background: #000000;
+  --home-bg: url("/src/assets/images/alora_dark.png");
+  --primary: #0a0a0a;
+  --primary-dark: #050505;
+  --secondary: #1a1a1a;
+  --accent: #6366f1;
+  --accent-light: #8b5cf6;
+  --accent-glow: rgba(99, 102, 241, 0.2);
+  --border: rgba(255, 255, 255, 0.1);
+  --text: #ffffff;
+  --text-muted: #a1a1aa;
+  --hover-danger: #ef4444;
+  --active-tab: linear-gradient(145deg, #1a1a1a, var(--secondary));
+  --glass: rgba(10, 10, 10, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --success: #10b981;
 }
 
 :root.spaceBlue {
   --background: rgba(2, 7, 27, 0.259);
-  --home-bg: url("/src/assets/images/alora_spaceBlue.png"); 
+  --home-bg: url("/src/assets/images/alora_spaceBlue.png");
   --primary: #0a0f20;
   --primary-dark: #040815;
   --secondary: #121c30;
@@ -57,8 +57,8 @@
 
 
 :root.operaGX {
-  --background: linear-gradient(145deg, #0d0606, #040000);
-  --home-bg: url("/src/assets/images/alora_opera.png"); 
+  --background: rgba(0, 0, 0, 0.55);
+  --home-bg: url("/src/assets/images/alora_opera.png");
   --primary: #090505;
   --primary-dark: #0a0b10;
   --secondary: #000000;
@@ -72,12 +72,12 @@
   --active-tab: linear-gradient(145deg, #ff0050, #1a1b22);
   --glass: rgba(10, 10, 10, 0.8);
   --glass-border: rgba(255, 0, 80, 0.05);
-  --success: #ff4f87; 
+  --success: #ff4f87;
 }
 
 :root.royalNight {
-  --background: rgba(0,0,0,0.25);
-  --home-bg: url("/src/assets/images/alora_royalNight.jpeg"); 
+  --background: rgba(0, 0, 0, 0.25);
+  --home-bg: url("/src/assets/images/alora_royalNight.jpeg");
   --primary: #1a1029;
   --primary-dark: #12091e;
   --secondary: #2a1c3c;

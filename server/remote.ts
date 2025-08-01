@@ -1,4 +1,3 @@
-// server/remote.ts
 import uWS from 'uWebSockets.js';
 
 interface UserData {
@@ -19,8 +18,6 @@ export function startWebSocketServer() {
             try {
                 const stringMessage = new TextDecoder().decode(message);
                 const { session, data } = JSON.parse(stringMessage);
-
-                // This is the first message from this client, let's set up their session
                 if (!ws.getUserData().session) {
                     if (!sessions.has(session)) {
                         sessions.set(session, new Set());
@@ -30,11 +27,9 @@ export function startWebSocketServer() {
                     console.log(`Client joined session: ${session}`);
                 }
 
-                // Broadcast to all other clients in the same session
                 const sessionClients = sessions.get(session);
                 if (sessionClients) {
                     for (const client of sessionClients) {
-                        // Send to everyone except the original sender
                         if (client !== ws) {
                             client.send(JSON.stringify(data), isBinary);
                         }
@@ -54,7 +49,6 @@ export function startWebSocketServer() {
                 sessionClients.delete(ws);
                 console.log(`Client left session: ${session}`);
 
-                // Clean up the session if it's empty
                 if (sessionClients.size === 0) {
                     sessions.delete(session);
                     console.log(`Session closed: ${session}`);

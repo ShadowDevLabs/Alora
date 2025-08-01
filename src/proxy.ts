@@ -12,6 +12,7 @@ async function init(e?: TransportEvent) {
     if (!e) navigator.serviceWorker.register('/sw.js');
     console.log("[INIT] Setting transport...");
     await setTransport();
+    console.log("[DEBUG] SJ at:");
 }
 
 async function setTransport(server?: string | undefined, transport?: string) {

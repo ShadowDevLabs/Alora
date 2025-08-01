@@ -1,5 +1,3 @@
-// index.tsx
-
 import { render } from 'solid-js/web';
 import { Router } from "@solidjs/router";
 import { MetaProvider } from 'solid-meta';
