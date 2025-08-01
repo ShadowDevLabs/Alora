@@ -25,6 +25,7 @@
     "@mercuryworkshop/epoxy-transport": "^2.1.27",
     "@mercuryworkshop/scramjet": "^1.0.2",
     "@motionone/solid": "^10.16.4",
+    "@nightnetwork/reflux": "^1.0.1",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.15.3",
     "@titaniumnetwork-dev/ultraviolet": "^3.2.10",

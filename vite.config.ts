@@ -5,6 +5,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
 import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
 import { scramjetPath } from "@mercuryworkshop/scramjet";
+import { refluxPath } from "@nightnetwork/reflux"
 //@ts-expect-error
 import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
 import sirv from 'sirv';
@@ -16,11 +17,11 @@ const devProxyAssets = () => ({
     server.middlewares.use('/bare-mux/', sirv(baremuxPath, { dev: true }));
     server.middlewares.use('/uv/', sirv(uvPath, { dev: true }));
     server.middlewares.use('/epoxy/', sirv(epoxyPath, { dev: true }));
+    server.middlewares.use('/reflux/', sirv(refluxPath, { dev: true }));
     server.middlewares.use('/api/ask', async (req, res, next) => {
       if (req.method !== 'POST') {
         return next();
       }
-
       let body = '';
       req.on('data', chunk => (body += chunk));
       req.on('end', async () => {

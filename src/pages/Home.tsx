@@ -57,17 +57,24 @@ const Home: Component = () => {
     };
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      switch (message.type) {
-        case 'addWindow':
-          addWindow(message.window.url, true);
-          break;
-        case 'closeWindow':
-          closeWindow(message.id, true);
-          break;
-        case 'bringToFront':
-          bringToFront(message.id, true);
-          break;
-      }
+      if (message.id) //send to window with id;
+        switch (message.type) {
+          case 'addWindow':
+            addWindow(message.window.url, true);
+            break;
+          case 'closeWindow':
+            closeWindow(message.id, true);
+            break;
+          case 'bringToFront':
+            bringToFront(message.id, true);
+            break;
+          case 'move':
+            //Implement
+            break;
+          case 'resize':
+            //Implement
+            break;
+        }
     };
     ws.onclose = () => console.log('WebSocket disconnected');
     ws.onerror = (err) => console.error('WebSocket error:', err);
