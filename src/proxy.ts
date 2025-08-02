@@ -5,7 +5,7 @@ import { BareMuxConnection } from "@mercuryworkshop/bare-mux";
 import Settings from "./settings";
 
 const refluxControl = new MessageChannel();
-const conn = new BareMuxConnection("/bare-mux/worker.js");
+const conn = new BareMuxConnection("/baremux/worker.js");
 let proxy = await Settings.get("proxy")
 
 const api = new RefluxAPI(refluxControl.port2);

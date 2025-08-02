@@ -13,7 +13,7 @@ const devProxyAssets = () => ({
   name: 'dev-proxy-assets',
   configureServer(server: ViteDevServer) {
     server.middlewares.use('/uv/', sirv('public/uv', { dev: true }));
-    server.middlewares.use('/bare-mux/', sirv(baremuxPath, { dev: true }));
+    server.middlewares.use('/baremux/', sirv(baremuxPath, { dev: true }));
     server.middlewares.use('/uv/', sirv(uvPath, { dev: true }));
     server.middlewares.use('/epoxy/', sirv(epoxyPath, { dev: true }));
     server.middlewares.use('/reflux/', sirv(refluxPath, { dev: true }));
