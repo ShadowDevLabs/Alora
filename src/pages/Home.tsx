@@ -20,7 +20,6 @@ const Home: Component = () => {
   const navigate = useNavigate();
   let ws: WebSocket;
   let appRef: HTMLDivElement | undefined;
-  let liveShareRef: typeof LiveShareMenu | undefined
 
   const [liveShareOpen, setLiveShareOpen] = createSignal(false);
   const [windows, setWindows] = createSignal<{ id: string, url: string, isClosing?: boolean }[]>([]);
@@ -43,7 +42,6 @@ const Home: Component = () => {
     });
   };
 
-
   const startSession = (id?: string) => {
     setSessionId(id || params.sessionId || crypto.randomUUID());
     if (!params.sessionId) {
@@ -51,31 +49,43 @@ const Home: Component = () => {
     }
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
+
     ws.onopen = () => {
       console.log('WebSocket connected');
-      ws.send(JSON.stringify({ session: sessionId, data: { type: 'join' } }));
+      ws.send(JSON.stringify({ session: sessionId(), data: { type: 'join' } }));
     };
+
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      if (message.id) //send to window with id;
-        switch (message.type) {
-          case 'addWindow':
-            addWindow(message.window.url, true);
-            break;
-          case 'closeWindow':
-            closeWindow(message.id, true);
-            break;
-          case 'bringToFront':
-            bringToFront(message.id, true);
-            break;
-          case 'move':
-            //Implement
-            break;
-          case 'resize':
-            //Implement
-            break;
-        }
+      const data = message.data || message;
+
+      switch (data.type) {
+        case 'addWindow':
+          addWindow(data.window.url, data.window.id, true);
+          break;
+        case 'closeWindow':
+          closeWindow(data.id, true);
+          break;
+        case 'bringToFront':
+          bringToFront(data.id, true);
+          break;
+        case 'requestState':
+          sendGlobalUpdate('sessionState', {
+            state: {
+              windows: windows(),
+              stackingOrder: stackingOrder()
+            }
+          });
+          break;
+        case 'sessionState':
+          if (data.state) {
+            setWindows(data.state.windows || []);
+            setStackingOrder(data.state.stackingOrder || []);
+          }
+          break;
+      }
     };
+
     ws.onclose = () => console.log('WebSocket disconnected');
     ws.onerror = (err) => console.error('WebSocket error:', err);
     return sessionId();
@@ -86,7 +96,7 @@ const Home: Component = () => {
   const endSession = () => {
     navigate('/', { replace: true });
     ws?.close();
-  }
+  };
 
   onMount(() => {
     const onStorage = (e: StorageEvent) => {
@@ -98,8 +108,8 @@ const Home: Component = () => {
     document.documentElement.className = localStorage.getItem('theme') ?? 'dark';
 
     loadAndApplyCloak();
-    if (windows().length === 0) {
-      addWindow('alora://new', true);
+    if (windows().length === 0 && !params.sessionId) {
+      addWindow('alora://new');
     }
 
     const cleanupSettings = Settings.onUpdate((key) => {
@@ -111,7 +121,6 @@ const Home: Component = () => {
       cleanupSettings();
     };
   });
-
 
   createEffect(() => {
     const currentCloak = cloak();
@@ -128,14 +137,17 @@ const Home: Component = () => {
 
   const sendGlobalUpdate = (type: string, data: object) => {
     if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ session: params.sessionId, data: { type, ...data } }));
+      ws.send(JSON.stringify({ session: sessionId(), data: { type, ...data } }));
     }
   };
 
-  const addWindow = (url: string = 'alora://new', fromRemote: boolean = false) => {
-    const newWindow = { id: crypto.randomUUID(), url: url, isClosing: false };
+  const addWindow = (url: string = 'alora://new', id?: string, fromRemote: boolean = false) => {
+    const newWindowId = id || crypto.randomUUID();
+    const newWindow = { id: newWindowId, url: url, isClosing: false };
+
     setWindows(prev => [...prev, newWindow]);
     setStackingOrder(prev => [...prev, newWindow.id]);
+
     if (!fromRemote) {
       sendGlobalUpdate('addWindow', { window: newWindow });
     }
@@ -155,7 +167,8 @@ const Home: Component = () => {
   const bringToFront = (id: string, fromRemote: boolean = false) => {
     setStackingOrder(prev => {
       if (prev.length > 0 && prev[prev.length - 1] === id) return prev;
-      return [...prev.filter(windowId => windowId !== id), id];
+      const newOrder = [...prev.filter(windowId => windowId !== id), id];
+      return newOrder;
     });
     if (!fromRemote) {
       sendGlobalUpdate('bringToFront', { id });

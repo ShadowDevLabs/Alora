@@ -118,37 +118,40 @@ function handleSessionMessage(ws: uWS.WebSocket<UserData>, session: string, data
     const sessionInfo = sessions.get(session);
     if (!sessionInfo) return;
 
-    switch (data.type) {
-        case 'sessionState':
-            if (ws === sessionInfo.host) {
+    // Broadcast the message to all other clients in the session.
+    broadcastToSession(session, data, ws);
+
+    // If the message is from the host, update the persistent session state.
+    if (ws === sessionInfo.host) {
+        switch (data.type) {
+            case 'sessionState':
                 sessionInfo.state = data.state;
-                broadcastToSession(session, data, ws);
-            }
-            break;
-
-        case 'addWindow':
-        case 'closeWindow':
-        case 'bringToFront':
-        case 'updateWindow':
-            broadcastToSession(session, data, ws);
-
-            if (ws === sessionInfo.host) {
+                break;
+            case 'addWindow':
+            case 'closeWindow':
+            case 'bringToFront':
                 updateSessionState(sessionInfo, data);
-            }
-            break;
-
-        case 'requestState':
-            if (ws === sessionInfo.host && sessionInfo.state) {
-                broadcastToSession(session, {
-                    type: 'sessionState',
-                    state: sessionInfo.state
-                });
-            }
-            break;
-
-        default:
-            broadcastToSession(session, data, ws);
-            break;
+                break;
+            case 'move':
+                if (data.id && data.pos) {
+                    updateSessionState(sessionInfo, { type: 'updateWindow', id: data.id, updates: { pos: data.pos } });
+                }
+                break;
+            case 'resize':
+                if (data.id && data.size) {
+                    updateSessionState(sessionInfo, { type: 'updateWindow', id: data.id, updates: { size: data.size } });
+                }
+                break;
+            case 'navigate':
+                if (data.id) {
+                    updateSessionState(sessionInfo, {
+                        type: 'updateWindow',
+                        id: data.id,
+                        updates: { href: data.href, src: data.src, title: data.title }
+                    });
+                }
+                break;
+        }
     }
 }
 
