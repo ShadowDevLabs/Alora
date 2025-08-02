@@ -4,7 +4,6 @@ import solidPlugin from 'vite-plugin-solid';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
 import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
-import { scramjetPath } from "@mercuryworkshop/scramjet";
 import { refluxPath } from "@nightnetwork/reflux"
 //@ts-expect-error
 import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
@@ -14,7 +13,7 @@ const devProxyAssets = () => ({
   name: 'dev-proxy-assets',
   configureServer(server: ViteDevServer) {
     server.middlewares.use('/uv/', sirv('public/uv', { dev: true }));
-    server.middlewares.use('/bare-mux/', sirv(baremuxPath, { dev: true }));
+    server.middlewares.use('/baremux/', sirv(baremuxPath, { dev: true }));
     server.middlewares.use('/uv/', sirv(uvPath, { dev: true }));
     server.middlewares.use('/epoxy/', sirv(epoxyPath, { dev: true }));
     server.middlewares.use('/reflux/', sirv(refluxPath, { dev: true }));
@@ -57,7 +56,6 @@ export default defineConfig({
       targets: [
         { src: [`${uvPath}/**/*`, `!${uvPath}/uv.config.js`].map(p => p.replace(/\\/g, "/")), dest: "uv" },
         { src: `${epoxyPath}/**/*`.replace(/\\/g, "/"), dest: "epoxy" },
-        { src: `${scramjetPath}/**/*`.replace(/\\/g, "/"), dest: "scram" },
         { src: `${baremuxPath}/**/*`.replace(/\\/g, "/"), dest: "baremux" },
       ],
     }),
