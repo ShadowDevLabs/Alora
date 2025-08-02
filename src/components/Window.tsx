@@ -16,6 +16,7 @@ import Sparkles from 'lucide-solid/icons/sparkles';
 import Maximize from 'lucide-solid/icons/maximize';
 import IFrame from './IFrame';
 import { parse, readable, icon } from '../proxy';
+import { broadcastInteractions } from '../interactions';
 
 interface WindowProps {
     id: string;
@@ -80,6 +81,9 @@ const Window: Component<WindowProps> = (props) => {
                         }
                         if (message.title) setTitle(message.title);
                         break;
+                    case 'interaction':
+                        replicateInteraction(message.event);
+                        break;
                 }
             } catch (e) {
                 console.error("Failed to parse WebSocket message", e);
@@ -94,15 +98,18 @@ const Window: Component<WindowProps> = (props) => {
 
     createEffect(() => {
         const handleMessage = (event: MessageEvent) => {
-            if (event.source !== iframeRef?.contentWindow || !event.data || event.data.type !== 'navigation') {
-                return;
+            if (event.source !== iframeRef?.contentWindow || !event.data) return;
+
+            if (event.data.type === 'navigation') {
+                const newUrl = readable(new URL(event.data.url.toString()).pathname);
+                const newTitle = event.data.title || 'New Tab';
+                setHref(newUrl);
+                setTitle(newTitle);
+                if (searchRef) searchRef.value = newUrl;
+                sendUpdate('navigate', { href: newUrl, src: event.data.url, title: newTitle });
+            } else if (event.data.type === 'interaction') {
+                sendUpdate('interaction', { event: event.data.event });
             }
-            const newUrl = readable(new URL(event.data.url.toString()).pathname);
-            const newTitle = event.data.title || 'New Tab';
-            setHref(newUrl);
-            setTitle(newTitle);
-            if (searchRef) searchRef.value = newUrl;
-            sendUpdate('navigate', { href: newUrl, src: event.data.url, title: newTitle });
         };
         window.addEventListener('message', handleMessage);
         onCleanup(() => window.removeEventListener('message', handleMessage));
@@ -155,7 +162,6 @@ const Window: Component<WindowProps> = (props) => {
         };
 
         const onDragEnd = () => {
-            // Re-enable text selection
             document.body.style.userSelect = '';
             shield.remove();
             shield.removeEventListener('mousemove', doDrag);
@@ -177,7 +183,6 @@ const Window: Component<WindowProps> = (props) => {
         const startMouse = { x: e.clientX, y: e.clientY };
         const minWidth = 440, minHeight = 220;
 
-        // Prevent text selection during resize
         document.body.style.userSelect = 'none';
 
         const shield = document.createElement('div');
@@ -214,7 +219,6 @@ const Window: Component<WindowProps> = (props) => {
         };
 
         const onResizeEnd = () => {
-            // Re-enable text selection
             document.body.style.userSelect = '';
             shield.remove();
             shield.removeEventListener('mousemove', doResize);
@@ -230,6 +234,7 @@ const Window: Component<WindowProps> = (props) => {
     const handleIframeLoad = () => {
         try {
             if (!iframeRef?.contentWindow) return;
+            broadcastInteractions(iframeRef, props.id);
             const iframeDoc = iframeRef.contentWindow.document;
             iframeDoc.body.addEventListener('mousedown', () => props.onFocus(props.id));
             if (title() === 'Loading...') {
@@ -252,6 +257,29 @@ const Window: Component<WindowProps> = (props) => {
         if (!document.fullscreenElement) fsRef?.requestFullscreen();
         else document.exitFullscreen();
     };
+
+    function replicateInteraction(eventData: any) {
+        if (!iframeRef || !iframeRef.contentDocument) return;
+
+        const targetElement = iframeRef.contentDocument.querySelector(eventData.targetSelector);
+        if (!targetElement) return;
+
+        if (eventData.type === 'scroll') {
+            targetElement.scrollTop = eventData.scrollTop;
+            targetElement.scrollLeft = eventData.scrollLeft;
+        } else if (eventData.type === 'input' || eventData.type === 'change') {
+            (targetElement as HTMLInputElement).value = eventData.value;
+        } else {
+            const event = new MouseEvent(eventData.type, {
+                bubbles: true,
+                cancelable: true,
+                view: iframeRef.contentWindow,
+                clientX: eventData.x,
+                clientY: eventData.y,
+            });
+            targetElement.dispatchEvent(event);
+        }
+    }
 
     return (
         <div

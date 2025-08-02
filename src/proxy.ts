@@ -73,13 +73,14 @@ async function setTransport(server?: string | undefined, transport?: string) {
     server = server || "wss://phantom.lol/wisp/";
     transport = transport || "epoxy"
     console.log(`[ST] Setting transport as ${transport} with server ${server}`);
-    await conn.setTransport('/reflux/index.mjs', [{
-        transport: transports[transport as keyof typeof transports],
-        wisp: server,
-        controlPort: refluxControl.port1,
-    }],
-        [refluxControl.port1]
-    );
+    await conn.setTransport(transports[transport as keyof typeof transports], [{ wisp: server }])
+    // await conn.setTransport('/reflux/index.mjs', [{
+    //     transport: transports[transport as keyof typeof transports],
+    //     wisp: server,
+    //     controlPort: refluxControl.port1,
+    // }],
+    //     [refluxControl.port1]
+    // );
 }
 
 async function parse(input: string): Promise<string> {

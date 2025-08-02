@@ -31,6 +31,7 @@ const LiveShareMenu: Component<LiveshareProps> = (props) => {
     id = props.openSession(id?.replace(location.href, "") || undefined);
     setSessionLink(`${location.origin}/${id}`);
     codeRef!.value = id;
+    setTimeout(props.close, 2000);
   }
 
   const copyToClipboard = async () => {
@@ -38,7 +39,7 @@ const LiveShareMenu: Component<LiveshareProps> = (props) => {
     setCopyState('loading');
     await navigator.clipboard.writeText(sessionLink());
     setCopyState('success');
-    setNotification('Copied to clipboard!');
+    setNotification('Copied to clipboard! Closing menu...');
 
     setTimeout(() => {
       setCopyState('idle');
@@ -66,7 +67,7 @@ const LiveShareMenu: Component<LiveshareProps> = (props) => {
       </div>
 
       <div class={styles.row}>
-        <button class={styles.joinButton} onclick={() => startSession(codeRef!.value)}>Join</button>
+        <button class={styles.joinButton} onclick={() => { startSession(codeRef!.value); }}>Join</button>
         <button class={styles.leaveButton} onclick={() => endSession()}>Leave</button>
       </div>
 
