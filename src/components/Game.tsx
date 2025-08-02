@@ -8,8 +8,8 @@ interface GameProps {
   img: string
 }
 const Game: Component<GameProps> = (props) => {
-  const href = `https://goshadow.net/books/files/${props.root}/${props.file}`
-  const imgSrc = `http://phantom.lol/books/files/${props.root}/${props.img}`
+  const href = `/books/files/${props.root}/${props.file}`
+  const imgSrc = `/books/files/${props.root}/${props.img}`
 
   return (
     <a href={href} class={styles.game} rel="noopener noreferrer">
