@@ -1,14 +1,14 @@
-import type { RefluxPlugin } from "@nightnetwork/reflux";
-import { RefluxAPI } from "@nightnetwork/reflux";
+// import type { RefluxPlugin } from "@nightnetwork/reflux";
+// import { RefluxAPI } from "@nightnetwork/reflux";
 import injectable from "./content"
 import { BareMuxConnection } from "@mercuryworkshop/bare-mux";
 import Settings from "./settings";
 
-const refluxControl = new MessageChannel();
+// const refluxControl = new MessageChannel();
 const conn = new BareMuxConnection("/baremux/worker.js");
 let proxy = await Settings.get("proxy")
 
-const api = new RefluxAPI(refluxControl.port2);
+// const api = new RefluxAPI(refluxControl.port2);
 
 Settings.onUpdate(async (e) => {
     if (e === 'proxy') proxy = await Settings.get("proxy")
@@ -25,7 +25,7 @@ async function init(e?: TransportEvent) {
     if (!e) navigator.serviceWorker.register('/sw.js');
     console.log("[INIT] Setting transport...");
     await setTransport();
-    await initPlugins();
+    // await initPlugins();
     console.log("[DEBUG] SJ at:");
 }
 
@@ -52,22 +52,22 @@ async function initScramjet() {
     sj.init();
 }
 
-async function initPlugins() {
-    api.addPlugin(buildPlugins());
-    return;
-}
+// async function initPlugins() {
+//     api.addPlugin(buildPlugins());
+//     return;
+// }
 
-function buildPlugins() {
-    return {
-        function: `
-                    /* @browser */
-                    ${injectable}
-                    /* @/browser */
-                `,
-        name: 'alora.base.functionality',
-        sites: ['*']
-    }
-}
+// function buildPlugins() {
+//     return {
+//         function: `
+//                     /* @browser */
+//                     ${injectable}
+//                     /* @/browser */
+//                 `,
+//         name: 'alora.base.functionality',
+//         sites: ['*']
+//     }
+// }
 
 async function setTransport(server?: string | undefined, transport?: string) {
     server = server || "wss://phantom.lol/wisp/";
