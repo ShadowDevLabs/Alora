@@ -13,7 +13,7 @@ const Game: Component<GameProps> = (props) => {
 
   return (
     <a href={href} class={styles.game} rel="noopener noreferrer">
-      <img src={imgSrc} alt={props.name} class={styles.gameImg} />
+      <img loading="lazy" src={imgSrc} alt={props.name} class={styles.gameImg} />
       <div class={styles.gameTitle}>{props.name}</div>
     </a>
   )

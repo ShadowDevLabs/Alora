@@ -7,11 +7,11 @@ import '../assets/css/themes.css';
 
 const Games: Component = () => {
   onMount(() => {
-  const onStorage = (e: StorageEvent) => e.key === 'theme' && e.newValue && (document.documentElement.className !== e.newValue) && (document.documentElement.className = e.newValue);
-  window.addEventListener('storage', onStorage);
-  document.documentElement.className = localStorage.getItem('theme') ?? 'dark';
-  return () => window.removeEventListener('storage', onStorage);
-});
+    const onStorage = (e: StorageEvent) => e.key === 'theme' && e.newValue && (document.documentElement.className !== e.newValue) && (document.documentElement.className = e.newValue);
+    window.addEventListener('storage', onStorage);
+    document.documentElement.className = localStorage.getItem('theme') ?? 'dark';
+    return () => window.removeEventListener('storage', onStorage);
+  });
 
   const [search, setSearch] = createSignal('')
 
