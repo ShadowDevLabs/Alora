@@ -22,12 +22,12 @@ const Search: Component = () => {
                     value={searchUrl()}
                     onChange={e => Settings.set("searchEngine", e.currentTarget.selectedOptions[0].dataset.url!)}
                 >
-                    <option value="https://www.google.com/search?q=%s" data-url="https://www.google.com/search?q=%s">Google</option>
-                    <option value="https://www.bing.com/search?q=%s" data-url="https://www.bing.com/search?q=%s">Bing</option>
-                    <option value="https://search.yahoo.com/search?p=%s" data-url="https://search.yahoo.com/search?p=%s">Yahoo</option>
-                    <option value="https://duckduckgo.com/?q=%s" data-url="https://duckduckgo.com/?q=%s">DuckDuckGo</option>
-                    <option value="https://search.brave.com/search?q=%s" data-url="https://search.brave.com/search?q=%s">Brave</option>
-                    <option value="https://yandex.com/search/?text=%s" data-url="https://yandex.com/search/?text=%s">Yandex</option>
+                    <option value="https://www.google.com/search?q={query}" data-url="https://www.google.com/search?q={query}">Google</option>
+                    <option value="https://www.bing.com/search?q={query}" data-url="https://www.bing.com/search?q={query}">Bing</option>
+                    <option value="https://search.yahoo.com/search?p={query}" data-url="https://search.yahoo.com/search?p={query}">Yahoo</option>
+                    <option value="https://duckduckgo.com/?q={query}" data-url="https://duckduckgo.com/?q={query}">DuckDuckGo</option>
+                    <option value="https://search.brave.com/search?q={query}" data-url="https://search.brave.com/search?q={query}">Brave</option>
+                    <option value="https://yandex.com/search/?text={query}s" data-url="https://yandex.com/search/?text={query}">Yandex</option>
                 </select>
             </div>
 

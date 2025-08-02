@@ -1,21 +1,29 @@
-import { createSignal, onMount, For, Show, onCleanup } from 'solid-js';
+import { createSignal, onMount, For, Show } from 'solid-js';
 import Plus from 'lucide-solid/icons/plus';
-import SquarePen from 'lucide-solid/icons/square-pen';
-import BookmarkPlus from 'lucide-solid/icons/bookmark-plus';
-import Trash from 'lucide-solid/icons/trash';
+import ShortcutCard from '../components/Shortcut';
 import styles from '../assets/css/New.module.css';
 import Settings from "../settings";
-import ShortcutCard from '../components/Shortcut';
-import { parse } from "../proxy"
-import '../assets/css/themes.css';
+import { parse } from "../proxy";
+
+type Shortcut = { name: string; url: string };
+
+type NewPageProps = {
+  search: (query: string) => void;
+};
 
 let defaultShortcuts: Shortcut[] = [];
 
-const NewPage = () => {
+const NewPage = (props: NewPageProps) => {
   onMount(() => {
-    const onStorage = (e: StorageEvent) => e.key === 'theme' && e.newValue && (document.documentElement.className !== e.newValue) && (document.documentElement.className = e.newValue);
+    const onStorage = (e: StorageEvent) =>
+      e.key === 'theme' &&
+      e.newValue &&
+      document.documentElement.className !== e.newValue &&
+      (document.documentElement.className = e.newValue);
+
     window.addEventListener('storage', onStorage);
     document.documentElement.className = localStorage.getItem('theme') ?? 'dark';
+
     return () => window.removeEventListener('storage', onStorage);
   });
 
@@ -25,9 +33,10 @@ const NewPage = () => {
   const [newName, setNewName] = createSignal('');
   const [newUrl, setNewUrl] = createSignal('');
   const [editIndex, setEditIndex] = createSignal<number | null>(null);
+  const [searchInput, setSearchInput] = createSignal('');
 
   onMount(async () => {
-    const saved = await Settings.get("shortcuts")
+    const saved = await Settings.get("shortcuts");
     setShortcuts(saved);
   });
 
@@ -35,7 +44,7 @@ const NewPage = () => {
     const parsed = await parse(url);
     console.log(parsed);
     location.href = parsed;
-  }
+  };
 
   const saveShortcuts = async (list: Shortcut[]) => {
     setShortcuts(list);
@@ -80,13 +89,24 @@ const NewPage = () => {
   const getFaviconUrl = (domain: string): string =>
     `https://www.google.com/s2/favicons?domain=${domain}&sz=16`;
 
+  const handleSearchSubmit = (e: Event) => {
+    e.preventDefault();
+    load(searchInput());
+  };
+
   return (
     <main class={styles.mainContent}>
       <h1 class={styles.logoTitle}>Alora</h1>
-      <div class={styles.searchContainer}>
+      <form class={styles.searchContainer} onSubmit={handleSearchSubmit}>
         <img src="./icons/shadow.png" class={styles.shadowIcon} />
-        <input type="text" class={styles.mainSearch} placeholder="Ask ShadowAI anything..." />
-      </div>
+        <input
+          type="text"
+          class={styles.mainSearch}
+          placeholder="Search the web"
+          value={searchInput()}
+          onInput={e => setSearchInput(e.currentTarget.value)}
+        />
+      </form>
 
       <div class={styles.shortcuts}>
         <For each={shortcuts()}>{(site, i) => (
@@ -95,7 +115,12 @@ const NewPage = () => {
             index={i()}
             onEdit={() => openEditModal(i())}
             onDelete={() => deleteShortcut(i())}
-            onClick={(e: MouseEvent) => { const tar = e.target as HTMLElement; if (['delete-shortcut', 'edit-shortcut'].includes(tar.parentElement?.dataset['testid'] as string)) return; load(site.url) }} />
+            onClick={(e: MouseEvent) => {
+              const tar = e.target as HTMLElement;
+              if (['delete-shortcut', 'edit-shortcut'].includes(tar.parentElement?.dataset['testid'] as string)) return;
+              load(site.url);
+            }}
+          />
         )}
         </For>
 
@@ -109,7 +134,7 @@ const NewPage = () => {
         </div>
 
         <Show when={showAddModal()}>
-          <div class={styles['modal-overlay']} onClick={() => setShowEditModal(false)}>
+          <div class={styles['modal-overlay']} onClick={() => setShowAddModal(false)}>
             <div class={styles.modal} onClick={e => e.stopPropagation()}>
               <h2>New Shortcut</h2>
               <input
@@ -158,7 +183,7 @@ const NewPage = () => {
           </div>
         </Show>
       </div>
-    </main >
+    </main>
   );
 };
 
